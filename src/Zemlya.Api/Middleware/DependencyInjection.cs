@@ -1,4 +1,9 @@
-﻿using Carter;
+using Carter;
+using Microsoft.EntityFrameworkCore;
+using Zemlya.Api.Abstractions;
+using Zemlya.Api.Features.Recommendations.Generate;
+using Zemlya.Api.Infrastructure.Database;
+using Zemlya.Api.Infrastructure.Weather;
 
 namespace Zemlya.Api.Middleware;
 
@@ -13,7 +18,8 @@ public static class DependencyInjection
             services.AddCarter();
             return services;
         }
-        private IServiceCollection AddCORS()
+
+        private IServiceCollection AddCors()
         {
             services.AddCors(options =>
             {
@@ -27,9 +33,23 @@ public static class DependencyInjection
             return services;
         }
 
+
+        public IServiceCollection AddPersistence(IConfiguration configuration)
+        {
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            services.AddDbContext<DatabaseContext>(options =>
+                options.UseNpgsql(connectionString));
         
+            return services;
+        }
+
+        public IServiceCollection AddInfrastructureServices()
+        {
+            services.AddHttpClient<IWeatherService, WeatherService>();
+            services.AddTransient<ZemlyaEngine>();
+        
+            return services;
+        }
     }
-
-
 
 }

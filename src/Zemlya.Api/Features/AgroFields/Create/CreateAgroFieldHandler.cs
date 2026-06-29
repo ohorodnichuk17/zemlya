@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Zemlya.Api.Abstractions;
 using Zemlya.Api.Infrastructure.Database;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
@@ -35,6 +35,4 @@ public sealed class CreateAgroFieldHandler(DatabaseContext context) : IRequestHa
 
         return newAgroField.Id;
     }
-
-    
 }

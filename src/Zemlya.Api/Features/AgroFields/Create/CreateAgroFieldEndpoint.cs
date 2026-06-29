@@ -1,4 +1,4 @@
-﻿using Carter;
+using Carter;
 using MediatR;
 using Zemlya.Api.Abstractions;
 
