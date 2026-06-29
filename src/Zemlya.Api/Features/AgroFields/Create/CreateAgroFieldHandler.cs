@@ -1,7 +1,7 @@
 ﻿using Zemlya.Api.Abstractions;
 using Zemlya.Api.Infrastructure.Database;
 
-namespace Zemlya.Api.Features.AgroFields.CreateField;
+namespace Zemlya.Api.Features.AgroFields.Create;
 
 public sealed record CreateAgroFieldRequest(
     string Name,
@@ -26,8 +26,11 @@ public sealed class CreateAgroFieldHandler(DatabaseContext context) : IHandler<C
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
+        
         await context.AgroFields.AddAsync(newAgroField,cancellationToken);
+        
         await context.SaveChangesAsync(cancellationToken);
+        
         return newAgroField.Id.ToString();
     }
 }

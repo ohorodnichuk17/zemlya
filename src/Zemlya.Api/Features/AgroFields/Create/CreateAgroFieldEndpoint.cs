@@ -1,6 +1,6 @@
 ﻿using Zemlya.Api.Abstractions;
 
-namespace Zemlya.Api.Features.AgroFields.CreateField;
+namespace Zemlya.Api.Features.AgroFields.Create;
 
 internal sealed class CreateAgroFieldEndpoint : IApiEndpoint
 {
@@ -11,6 +11,7 @@ internal sealed class CreateAgroFieldEndpoint : IApiEndpoint
             CancellationToken cancellationToken) =>
         {
             var result = await handler.HandleAsync(command,cancellationToken);
+            
             return Results.Created();
         });
     }
