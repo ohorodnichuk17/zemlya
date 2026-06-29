@@ -1,23 +1,35 @@
-﻿namespace Zemlya.Api.Middleware;
+﻿using Carter;
+
+namespace Zemlya.Api.Middleware;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddPresentation(this IServiceCollection services)
+    extension(IServiceCollection services)
     {
-        services.AddCORS();
-        return services;
-    }
-    private static IServiceCollection AddCORS(this IServiceCollection services)
-    {
-        services.AddCors(options =>
+        public IServiceCollection AddPresentation()
         {
-            options.AddPolicy("CustomCORS", builder =>
+            services.AddCORS();
+            services.AddMediatR(config => config.RegisterServicesFromAssembly(typeof(Program).Assembly));
+            services.AddCarter();
+            return services;
+        }
+        private IServiceCollection AddCORS()
+        {
+            services.AddCors(options =>
             {
-                builder.AllowAnyOrigin()
-                       .AllowAnyMethod()
-                       .AllowAnyHeader();
+                options.AddPolicy("CustomCORS", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
             });
-        });
-        return services;
+            return services;
+        }
+
+        
     }
+
+
+
 }
