@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Zemlya.Api.Persistence.Migrations
+namespace Zemlya.Api.Database.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration

@@ -2,21 +2,19 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Zemlya.Api.Database;
+using Zemlya.Api.Infrastructure.Database;
 
 #nullable disable
 
-namespace Zemlya.Api.Persistence.Migrations
+namespace Zemlya.Api.Database.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20260629090826_Initial")]
-    partial class Initial
+    partial class DatabaseContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
