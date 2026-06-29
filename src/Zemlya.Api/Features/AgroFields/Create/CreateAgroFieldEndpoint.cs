@@ -1,17 +1,18 @@
-﻿using Zemlya.Api.Abstractions;
+using Carter;
+using MediatR;
+using Zemlya.Api.Abstractions;
 
-namespace Zemlya.Api.Features.AgroFields.Create;
+namespace Zemlya.Api.Features.AgroFields.CreateField;
 
-internal sealed class CreateAgroFieldEndpoint : IApiEndpoint
+public class CreateAgroFieldEndpoint : ICarterModule
 {
-    public void MapEndpoint(WebApplication app)
+    public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPost("/api/agro-fields", async (IHandler<CreateAgroFieldRequest,string> handler,
-            CreateAgroFieldRequest command, 
+        app.MapPost("/api/agro-fields", async (CreateAgroFieldRequest request,
+            ISender sender,
             CancellationToken cancellationToken) =>
         {
-            var result = await handler.HandleAsync(command,cancellationToken);
-            
+            var result = await sender.Send(request, cancellationToken);
             return Results.Created();
         });
     }

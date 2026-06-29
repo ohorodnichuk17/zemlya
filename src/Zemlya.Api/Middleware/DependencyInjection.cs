@@ -1,3 +1,4 @@
+using Carter;
 using Microsoft.EntityFrameworkCore;
 using Zemlya.Api.Abstractions;
 using Zemlya.Api.Features.Recommendations.Generate;
@@ -12,7 +13,9 @@ public static class DependencyInjection
     {
         public IServiceCollection AddPresentation()
         {
-            services.AddCors();
+            services.AddCORS();
+            services.AddMediatR(config => config.RegisterServicesFromAssembly(typeof(Program).Assembly));
+            services.AddCarter();
             return services;
         }
 
@@ -23,13 +26,13 @@ public static class DependencyInjection
                 options.AddPolicy("CustomCORS", builder =>
                 {
                     builder.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader();
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
                 });
             });
-            
             return services;
         }
+
 
         public IServiceCollection AddPersistence(IConfiguration configuration)
         {
@@ -48,4 +51,5 @@ public static class DependencyInjection
             return services;
         }
     }
+
 }
