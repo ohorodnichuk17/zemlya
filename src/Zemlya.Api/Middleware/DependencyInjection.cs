@@ -27,6 +27,7 @@ public static class DependencyInjection
                         .AllowAnyHeader();
                 });
             });
+            
             return services;
         }
 
