@@ -1,7 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+
+using Zemlya.Api.Middleware;
 using Zemlya.Api.Abstractions;
 using Zemlya.Api.Infrastructure.Database;
 using Zemlya.Api.Infrastructure.Weather;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +12,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseNpgsql(connectionString));
+
+builder.Services.AddPresentation();
 
 // Add services to the container.
 builder.Services.AddHttpClient<IWeatherService, WeatherService>();
@@ -18,6 +23,7 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+app.UseCors("CustomCORS");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
