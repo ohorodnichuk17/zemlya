@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Zemlya.Api.Database;
+using Zemlya.Api.Infrastructure.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 

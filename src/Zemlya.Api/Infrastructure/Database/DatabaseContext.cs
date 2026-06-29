@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Zemlya.Api.Features.AgroFields;
 using Zemlya.Api.Features.Recommendations;
 
-namespace Zemlya.Api.Database;
+namespace Zemlya.Api.Infrastructure.Database;
 
 public class DatabaseContext : DbContext
 {
