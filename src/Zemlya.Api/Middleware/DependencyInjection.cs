@@ -1,23 +1,50 @@
-﻿namespace Zemlya.Api.Middleware;
+using Microsoft.EntityFrameworkCore;
+using Zemlya.Api.Abstractions;
+using Zemlya.Api.Features.Recommendations.Generate;
+using Zemlya.Api.Infrastructure.Database;
+using Zemlya.Api.Infrastructure.Weather;
+
+namespace Zemlya.Api.Middleware;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddPresentation(this IServiceCollection services)
+    extension(IServiceCollection services)
     {
-        services.AddCORS();
-        return services;
-    }
-    private static IServiceCollection AddCORS(this IServiceCollection services)
-    {
-        services.AddCors(options =>
+        public IServiceCollection AddPresentation()
         {
-            options.AddPolicy("CustomCORS", builder =>
+            services.AddCors();
+            return services;
+        }
+
+        private IServiceCollection AddCors()
+        {
+            services.AddCors(options =>
             {
-                builder.AllowAnyOrigin()
-                       .AllowAnyMethod()
-                       .AllowAnyHeader();
+                options.AddPolicy("CustomCORS", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
+                });
             });
-        });
-        return services;
+            return services;
+        }
+
+        public IServiceCollection AddPersistence(IConfiguration configuration)
+        {
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            services.AddDbContext<DatabaseContext>(options =>
+                options.UseNpgsql(connectionString));
+        
+            return services;
+        }
+
+        public IServiceCollection AddInfrastructureServices()
+        {
+            services.AddHttpClient<IWeatherService, WeatherService>();
+            services.AddTransient<ZemlyaEngine>();
+        
+            return services;
+        }
     }
 }
