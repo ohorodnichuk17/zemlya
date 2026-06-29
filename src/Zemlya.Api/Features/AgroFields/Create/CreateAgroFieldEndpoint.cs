@@ -1,8 +1,7 @@
 ﻿using Carter;
 using MediatR;
-using Zemlya.Api.Abstractions;
 
-namespace Zemlya.Api.Features.AgroFields.CreateField;
+namespace Zemlya.Api.Features.AgroFields.Create;
 
 public class CreateAgroFieldEndpoint : ICarterModule
 {

@@ -5,7 +5,7 @@ using Zemlya.Api.Infrastructure.Database;
 
 namespace Zemlya.Api.Features.AgroFields.Get;
 
-public sealed record GetAgroFieldsRequest() : IRequest<ICollection<GetAgroFieldsResponse>>;
+public sealed record GetAgroFieldsRequest(int Page, int SizeOfPage) : IRequest<ICollection<GetAgroFieldsResponse>>;
 public sealed record GetAgroFieldsResponse(
     Guid Id,
     string Name,
@@ -21,7 +21,7 @@ public class GetAgroFieldsHandler(DatabaseContext context) : IRequestHandler<Get
 {
     public async Task<ICollection<GetAgroFieldsResponse>> Handle(GetAgroFieldsRequest request, CancellationToken cancellationToken)
     {
-        return await context.AgroFields.Select(af => new GetAgroFieldsResponse(
+        return await context.AgroFields.Skip(request.Page * request.SizeOfPage).Take(request.SizeOfPage).Select(af => new GetAgroFieldsResponse(
             af.Id,
             af.Name,
             af.CropType.ToString(),
