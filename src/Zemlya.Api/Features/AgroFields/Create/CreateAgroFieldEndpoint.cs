@@ -1,4 +1,4 @@
-﻿using Carter;
+using Carter;
 using MediatR;
 
 namespace Zemlya.Api.Features.AgroFields.Create;

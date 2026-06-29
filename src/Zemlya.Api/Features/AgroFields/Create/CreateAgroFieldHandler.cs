@@ -1,4 +1,5 @@
-﻿using MediatR;
+
+using MediatR;
 using Zemlya.Api.Infrastructure.Database;
 
 namespace Zemlya.Api.Features.AgroFields.Create;
@@ -33,6 +34,4 @@ public sealed class CreateAgroFieldHandler(DatabaseContext context) : IRequestHa
 
         return newAgroField.Id;
     }
-
-    
 }
