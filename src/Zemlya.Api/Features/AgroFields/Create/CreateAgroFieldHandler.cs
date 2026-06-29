@@ -1,7 +1,6 @@
 using MediatR;
 using Zemlya.Api.Abstractions;
 using Zemlya.Api.Infrastructure.Database;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Zemlya.Api.Features.AgroFields.CreateField;
 
