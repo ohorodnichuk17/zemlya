@@ -5,10 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Zemlya.Api.Database;
+using Zemlya.Api.Infrastructure.Database;
 
 #nullable disable
 
-namespace Zemlya.Api.Migrations
+namespace Zemlya.Api.Database.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
     partial class DatabaseContextModelSnapshot : ModelSnapshot
