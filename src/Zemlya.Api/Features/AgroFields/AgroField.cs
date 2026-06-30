@@ -11,6 +11,9 @@ public sealed class AgroField
     public decimal SizeHectares { get; set; }
     public decimal Latitude { get; set; }
     public decimal Longitude { get; set; }
+    public string Oblast { get; set; } = string.Empty;
+    public ShellingImpactLevel ShellingImpactLevel { get; set; }
+    public DateTime SowingDate { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     

@@ -33,6 +33,9 @@ public class DatabaseContext : DbContext
             entity.Property(e => e.SizeHectares).HasPrecision(10, 2);
             entity.Property(e => e.Latitude).HasPrecision(9, 6);
             entity.Property(e => e.Longitude).HasPrecision(9, 6);
+            entity.Property(e => e.Oblast).HasMaxLength(100).IsRequired();
+            entity.Property(e => e.ShellingImpactLevel).HasConversion<string>();
+            entity.Property(e => e.SowingDate).IsRequired();
         });
         
         modelBuilder.Entity<Recommendation>(entity =>
@@ -41,7 +44,7 @@ public class DatabaseContext : DbContext
             entity.HasKey(e => e.Id);
             entity.Property(e => e.ActionType).HasConversion<string>();
             entity.Property(e => e.Amount).HasPrecision(10, 2);
-            entity.Property(e => e.Description).HasMaxLength(300);
+            entity.Property(e => e.Description).HasMaxLength(1000);
             
             entity.HasOne(e => e.AgroField)
                 .WithMany(r => r.Recommendations)

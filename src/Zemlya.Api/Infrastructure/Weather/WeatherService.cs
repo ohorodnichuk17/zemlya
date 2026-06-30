@@ -56,4 +56,34 @@ public class WeatherService(
             return null;
         }
     }
+
+    public async Task<List<ForecastItem>?> GetForecastAsync(decimal lat, decimal lng, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var latStr = lat.ToString(CultureInfo.InvariantCulture);
+            var lonStr = lng.ToString(CultureInfo.InvariantCulture);
+            
+            var url = $"https://api.openweathermap.org/data/2.5/forecast?lat={latStr}&lon={lonStr}&appid={_apiKey}&units=metric";
+            
+            logger.LogInformation("Fetching weather forecast data from OpenWeatherMap for Lat: {0}, Lng: {1}", latStr, lonStr);
+            
+            var response = await httpClient.GetAsync(url, cancellationToken);
+            
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync(cancellationToken);
+                logger.LogError("Failed to fetch weather forecast. Status: {0}, Error: {1}", response.StatusCode, errorContent);
+                return null;
+            }
+            
+            var forecastData = await response.Content.ReadFromJsonAsync<ForecastResponse>(cancellationToken: cancellationToken);
+            return forecastData?.List;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "An error occurred while fetching weather forecast for Lat: {0}, Lng: {1}.", lat, lng);
+            return null;
+        }
+    }
 }
