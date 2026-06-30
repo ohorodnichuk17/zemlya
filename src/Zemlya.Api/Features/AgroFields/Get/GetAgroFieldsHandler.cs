@@ -5,7 +5,7 @@ using Zemlya.Api.Infrastructure.Database;
 
 namespace Zemlya.Api.Features.AgroFields.Get;
 
-public sealed record GetAgroFieldsRequest() : IRequest<ICollection<GetAgroFieldsResponse>>;
+public sealed record GetAgroFieldsRequest(int Page, int SizeOfPage) : IRequest<PaginationAgroFieldsResponse>;
 public sealed record GetAgroFieldsResponse(
     Guid Id,
     string Name,
@@ -16,12 +16,19 @@ public sealed record GetAgroFieldsResponse(
     decimal Longitude,
     DateTime CreatedAt,
     DateTime UpdatedAt,
-    ICollection<Recommendation> Recommendations);
-public class GetAgroFieldsHandler(DatabaseContext context) : IRequestHandler<GetAgroFieldsRequest, ICollection<GetAgroFieldsResponse>>
+    ICollection<Guid> RecommendationsId);
+public sealed record PaginationAgroFieldsResponse(
+    ICollection<GetAgroFieldsResponse> Fields,
+    int TotalCount);
+public class GetAgroFieldsHandler(DatabaseContext context) : IRequestHandler<GetAgroFieldsRequest, PaginationAgroFieldsResponse>
 {
-    public async Task<ICollection<GetAgroFieldsResponse>> Handle(GetAgroFieldsRequest request, CancellationToken cancellationToken)
+    public async Task<PaginationAgroFieldsResponse> Handle(GetAgroFieldsRequest request, CancellationToken cancellationToken)
     {
-        return await context.AgroFields.Select(af => new GetAgroFieldsResponse(
+        return new PaginationAgroFieldsResponse(
+            await context.AgroFields
+            .Skip(request.Page * request.SizeOfPage)
+            .Take(request.SizeOfPage)
+            .Select(af => new GetAgroFieldsResponse(
             af.Id,
             af.Name,
             af.CropType.ToString(),
@@ -31,8 +38,9 @@ public class GetAgroFieldsHandler(DatabaseContext context) : IRequestHandler<Get
             af.Longitude,
             af.CreatedAt,
             af.UpdatedAt,
-            af.Recommendations
+            af.Recommendations.Select(r => r.Id).ToList()
             ))
-            .ToListAsync();
+            .ToListAsync(),
+            await context.AgroFields.CountAsync());
     }
 }

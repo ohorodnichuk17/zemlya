@@ -1,8 +1,8 @@
+
 using MediatR;
-using Zemlya.Api.Abstractions;
 using Zemlya.Api.Infrastructure.Database;
 
-namespace Zemlya.Api.Features.AgroFields.CreateField;
+namespace Zemlya.Api.Features.AgroFields.Create;
 
 public sealed record CreateAgroFieldRequest(
     string Name,
