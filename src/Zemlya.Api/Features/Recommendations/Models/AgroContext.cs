@@ -12,11 +12,12 @@ public enum UkrainianAgroZone
     Steppe
 }
 
+// Стадії росту культури
 public enum CropGrowthStage
 {
-    Germination,
-    Vegetative,
-    Flowering,
-    Maturity,
-    Harvested
+    Germination,    // Проростання
+    Vegetative,     // Вегетація
+    Flowering,      // Цвітіння
+    Maturity,       // Дозрівання
+    Harvested       // Зібрані
 }
