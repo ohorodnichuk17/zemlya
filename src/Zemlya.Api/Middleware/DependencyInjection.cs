@@ -13,7 +13,7 @@ public static class DependencyInjection
     {
         public IServiceCollection AddPresentation()
         {
-            services.AddCORS();
+            services.AddCors();
             services.AddMediatR(config => config.RegisterServicesFromAssembly(typeof(Program).Assembly));
             services.AddCarter();
             return services;
@@ -45,7 +45,7 @@ public static class DependencyInjection
 
         public IServiceCollection AddInfrastructureServices()
         {
-            services.AddHttpClient<IWeatherService, WeatherService>();
+            services.AddHttpClient<IWeatherService, MockWeatherService>();
             services.AddTransient<ZemlyaEngine>();
         
             return services;
