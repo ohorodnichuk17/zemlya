@@ -1,11 +1,27 @@
 import { Card, CardContent, Typography, CardActions, Button, Box } from "@mui/material"
 import fieldBackground from "../assets/images/field-background.png"
+import wheatBackground from "../assets/images/wheat_field.png"
+import sunflowerBackground from "../assets/images/sunflower_field.png"
+import cornBackground from "../assets/images/corn_field.png"
 import { format } from "date-fns";
 import type { IFieldsResponse } from "../interfaces/fields/fields"
 import { useNavigate } from "react-router-dom";
 
 export const CardComponent = (props: { cardInfo: IFieldsResponse }) => {
    const navigate = useNavigate();
+   
+   const getCropImage = (crop: string) => {
+      switch (crop.toLowerCase()) {
+         case 'wheat':
+            return wheatBackground;
+         case 'sunflower':
+            return sunflowerBackground;
+         case 'corn':
+            return cornBackground;
+         default:
+            return fieldBackground;
+      }
+   };
    
    return (
       <Card sx={{ 
@@ -23,7 +39,7 @@ export const CardComponent = (props: { cardInfo: IFieldsResponse }) => {
          },
          border: '1px solid rgba(0, 0, 0, 0.06)'
       }}>
-         <img src={fieldBackground} alt="Field" style={{ width: '100%', height: '120px', objectFit: 'cover', borderRadius: '12px 12px 0px 0px' }} />
+         <img src={getCropImage(props.cardInfo.cropType)} alt="Field" style={{ width: '100%', height: '120px', objectFit: 'cover', borderRadius: '12px 12px 0px 0px' }} />
          <CardContent sx={{ flexGrow: 1, padding: '16px' }}>
             <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, color: '#1B5E20' }}>
                {props.cardInfo.name}
