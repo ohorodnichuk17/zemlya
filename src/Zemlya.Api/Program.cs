@@ -1,7 +1,4 @@
 using Zemlya.Api.Middleware;
-using Zemlya.Api.Abstractions;
-using Zemlya.Api.Infrastructure.Database;
-using Zemlya.Api.Infrastructure.Weather;
 using Carter;
 
 
