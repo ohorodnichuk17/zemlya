@@ -9,10 +9,10 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
+import EcoIcon from '@mui/icons-material/Spa';
 import { Outlet, useNavigate } from "react-router-dom";
 
-const pages = [['Поля', "/"], ['Сторінка 2', "/page2"], ['Сторінка 3', "/page3"]];
+const pages = [['Поля', "/"], ['Показники', "/page2"], ['Про проєкт', "/page3"]];
 
 function NavigationLayout() {
    const navigate = useNavigate();
@@ -23,32 +23,32 @@ function NavigationLayout() {
    };
 
    const handleCloseNavMenu = () => {
-      console.log('handleCloseNavMenu');
       setAnchorElNav(null);
    };
 
    return (
       <Container maxWidth={false}
-         disableGutters sx={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100%', backgroundColor: '#E8F5E9', minWidth: '400px' }}>
-         <AppBar position="static" sx={{ backgroundColor: '#4CAF50', zIndex: 5 }}>
-            <Container >
+         disableGutters sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', width: '100%', backgroundColor: '#F1F8E9', minWidth: '400px' }}>
+         <AppBar position="static" sx={{ backgroundColor: '#2E7D32', borderBottom: '3px solid #FBC02D', zIndex: 5 }}>
+            <Container>
                <Toolbar disableGutters>
-                  <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+                  <EcoIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, color: '#FBC02D' }} />
                   <Typography
                      variant="h6"
                      noWrap
-                     component="a"
+                     onClick={() => navigate('/')}
                      sx={{
                         mr: 2,
                         display: { xs: 'none', md: 'flex' },
-                        fontFamily: 'monospace',
-                        fontWeight: 700,
-                        letterSpacing: '.3rem',
+                        fontFamily: "'Outfit', sans-serif",
+                        fontWeight: 800,
+                        letterSpacing: '.1rem',
                         color: 'inherit',
                         textDecoration: 'none',
+                        cursor: 'pointer'
                      }}
                   >
-                     LOGO
+                     Zemlya
                   </Typography>
 
                   <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -79,48 +79,53 @@ function NavigationLayout() {
                         sx={{ display: { xs: 'block', md: 'none' } }}
                      >
                         {pages.map((page) => (
-                           <MenuItem key={page[0]} onClick={() => navigate(page[1])}>
+                           <MenuItem key={page[0]} onClick={() => { handleCloseNavMenu(); navigate(page[1]); }}>
                               <Typography sx={{ textAlign: 'center' }}>{page[0]}</Typography>
                            </MenuItem>
                         ))}
                      </Menu>
                   </Box>
-                  <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+                  <EcoIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1, color: '#FBC02D' }} />
                   <Typography
                      variant="h5"
                      noWrap
-                     component="a"
-                     href="#app-bar-with-responsive-menu"
+                     onClick={() => navigate('/')}
                      sx={{
                         mr: 2,
                         display: { xs: 'flex', md: 'none' },
                         flexGrow: 1,
-                        fontFamily: 'monospace',
-                        fontWeight: 700,
-                        letterSpacing: '.3rem',
+                        fontFamily: "'Outfit', sans-serif",
+                        fontWeight: 800,
+                        letterSpacing: '.1rem',
                         color: 'inherit',
                         textDecoration: 'none',
+                        cursor: 'pointer'
                      }}
                   >
-                     LOGO
+                     Zemlya
                   </Typography>
                   <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                      {pages.map((page) => (
                         <Button
                            key={page[0]}
                            onClick={() => navigate(page[1])}
-                           sx={{ my: 2, color: 'white', display: 'block' }}
+                           sx={{ my: 2, color: 'white', display: 'block', textTransform: 'none', fontWeight: 600 }}
                         >
                            {page[0]}
                         </Button>
                      ))}
+                  </Box>
+
+                  {/* Світло-синя та жовта плашка (Прапор України) */}
+                  <Box sx={{ display: 'flex', flexDirection: 'column', width: '24px', height: '16px', borderRadius: '2px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.2)' }}>
+                     <Box sx={{ flex: 1, backgroundColor: '#0057B7' }} />
+                     <Box sx={{ flex: 1, backgroundColor: '#FFD700' }} />
                   </Box>
                </Toolbar>
             </Container>
          </AppBar>
          <Outlet />
       </Container>
-
    );
 }
 export default NavigationLayout;

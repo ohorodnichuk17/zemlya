@@ -1,0 +1,214 @@
+import { useState, useEffect, useCallback } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import Container from '@mui/material/Container';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import CircularProgress from '@mui/material/CircularProgress';
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import Link from '@mui/material/Link';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { api } from '../axios/api';
+import { WeatherCard } from '../components/WeatherCard';
+import { GrowthStageCard } from '../components/GrowthStageCard';
+import { SafetyAdvisoryAlert } from '../components/SafetyAdvisoryAlert';
+import { RecommendationsTimeline } from '../components/RecommendationsTimeline';
+import { AnalyticsCharts } from '../components/AnalyticsCharts';
+import confetti from 'canvas-confetti';
+
+interface Recommendation {
+  id: string;
+  actionType: string;
+  scheduledFor: string;
+  amount: number;
+  isCompleted: boolean;
+  description: string;
+}
+
+interface ForecastItem {
+  dateText: string;
+  temperature: number;
+  humidity: number;
+  rain: number;
+  main: string;
+  description: string;
+}
+
+interface DashboardData {
+  fieldId: string;
+  fieldName: string;
+  crop: string;
+  soil: string;
+  sizeHectares: number;
+  oblast: string;
+  shellingImpactLevel: string;
+  sowingDate: string;
+  agroClimaticZone: string;
+  growthStage: string;
+  daysSinceSowing: number;
+  currentTemperature: number;
+  currentHumidity: number;
+  rainAmount: number;
+  weatherDescription: string;
+  forecast: ForecastItem[];
+  recommendations: Recommendation[];
+}
+
+export const FieldDashboardPage = () => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const [data, setData] = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchDashboard = useCallback(async () => {
+    if (!id) return;
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await api.get<DashboardData>(`/api/fields/${id}/dashboard`);
+      setData(response.data);
+    } catch (err) {
+      console.error(err);
+      setError('Не вдалося завантажити аналітику поля. Спробуйте оновити сторінку.');
+    } finally {
+      setLoading(false);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    fetchDashboard();
+  }, [fetchDashboard]);
+
+  const handleCompleteRecommendation = async (recId: string) => {
+    if (!data) return;
+
+    try {
+      // Оновити локальний стан перед запитом для кращого UX
+      setData({
+        ...data,
+        recommendations: data.recommendations.map(r => 
+          r.id === recId ? { ...r, isCompleted: true } : r
+        )
+      });
+
+      // Надіслати POST запит на бекенд
+      await api.post(`/api/recommendations/${recId}/complete`);
+      
+      // Запустити конфеті ефект
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.8 },
+        colors: ['#4CAF50', '#81C784', '#FBC02D', '#29B6F6']
+      });
+    } catch (err) {
+      console.error(err);
+      // При виникненні помилки оновити дані з сервера
+      fetchDashboard();
+    }
+  };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', flexGrow: 1, alignItems: 'center', justifyContent: 'center', minHeight: '80vh', flexDirection: 'column', gap: 2 }}>
+        <CircularProgress sx={{ color: '#2E7D32' }} />
+        <Typography color="text.secondary">Отримання супутникових та метеорологічних даних...</Typography>
+      </Box>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <Container sx={{ py: 6, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+        <Typography color="error">{error || 'Ділянку не знайдено'}</Typography>
+        <Button startIcon={<ArrowBackIcon />} onClick={() => navigate('/')} variant="outlined" sx={{ color: '#2E7D32', borderColor: '#2E7D32' }}>
+          Назад до списку
+        </Button>
+      </Container>
+    );
+  }
+
+  return (
+    <Container sx={{ py: 4, display: 'flex', flexDirection: 'column', gap: 3, flexGrow: 1, backgroundColor: '#F1F8E9' }} maxWidth="lg">
+      {/* Навігація та хлібні крихти */}
+      <Box>
+        <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>
+          <Link underline="hover" color="inherit" onClick={() => navigate('/')} sx={{ cursor: 'pointer', fontWeight: 500 }}>
+            Головна
+          </Link>
+          <Typography color="text.primary" sx={{ fontWeight: 600 }}>
+            {data.fieldName}
+          </Typography>
+        </Breadcrumbs>
+
+        <Button 
+          startIcon={<ArrowBackIcon />} 
+          onClick={() => navigate('/')} 
+          sx={{ 
+            color: '#2E7D32', 
+            textTransform: 'none', 
+            fontWeight: 600,
+            '&:hover': { backgroundColor: 'rgba(46, 125, 50, 0.05)' } 
+          }}
+        >
+          Назад до списку полів
+        </Button>
+      </Box>
+
+      {/* Заголовок та агрокліматична зона */}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
+        <Box>
+          <Typography variant="h4" sx={{ fontWeight: 800, color: '#1B5E20' }}>
+            {data.fieldName}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {data.oblast} область • Площа: {data.sizeHectares} га • Зона: {data.agroClimaticZone}
+          </Typography>
+        </Box>
+      </Box>
+
+      {/* Безпекові попередження щодо обстрілів */}
+      <SafetyAdvisoryAlert shellingImpactLevel={data.shellingImpactLevel} crop={data.crop} />
+
+      {/* Головна сітка дашборду */}
+      <Box sx={{ 
+        display: 'grid', 
+        gridTemplateColumns: { xs: '1fr', md: '7fr 4fr', lg: '8fr 4fr' }, 
+        gap: 3,
+        width: '100%'
+      }}>
+        {/* Ліва частина: погода, фаза росту, графіки */}
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          <Box sx={{ 
+            display: 'grid', 
+            gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, 
+            gap: 3 
+          }}>
+            <WeatherCard 
+              temperature={data.currentTemperature} 
+              humidity={data.currentHumidity} 
+              rain={data.rainAmount} 
+              description={data.weatherDescription} 
+            />
+            <GrowthStageCard 
+              sowingDate={data.sowingDate} 
+              daysSinceSowing={data.daysSinceSowing} 
+              growthStage={data.growthStage} 
+            />
+          </Box>
+          
+          <AnalyticsCharts forecast={data.forecast} />
+        </Box>
+
+        {/* Права частина: Чекліст догляду (Timeline) */}
+        <Box>
+          <RecommendationsTimeline 
+            recommendations={data.recommendations} 
+            onComplete={handleCompleteRecommendation} 
+          />
+        </Box>
+      </Box>
+    </Container>
+  );
+};
