@@ -7,7 +7,7 @@ public class CreateAgroFieldEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPost("/api/agro-fields", async (CreateAgroFieldRequest request,
+        app.MapPost("/api/fields", async (CreateAgroFieldRequest request,
             ISender sender,
             CancellationToken cancellationToken) =>
         {

@@ -1,6 +1,9 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { fieldsReducer } from "./slices/fieldsSlice";
 
-const reducers = combineReducers({});
+const reducers = combineReducers({
+    fieldsReducer: fieldsReducer
+});
 export const storage = configureStore({
     reducer: reducers,
 });

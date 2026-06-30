@@ -13,7 +13,7 @@ public static class DependencyInjection
     {
         public IServiceCollection AddPresentation()
         {
-            services.AddCORS();
+            services.AddCors();
             services.AddMediatR(config => config.RegisterServicesFromAssembly(typeof(Program).Assembly));
             services.AddCarter();
             return services;
