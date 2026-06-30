@@ -1,5 +1,5 @@
-using Zemlya.Api.Middleware;
 using Carter;
+using Zemlya.Api.Extensions;
 
 
 var builder = WebApplication.CreateBuilder(args);

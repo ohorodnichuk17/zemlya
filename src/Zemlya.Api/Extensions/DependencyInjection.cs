@@ -5,7 +5,7 @@ using Zemlya.Api.Features.Recommendations.Services;
 using Zemlya.Api.Infrastructure.Database;
 using Zemlya.Api.Infrastructure.Weather;
 
-namespace Zemlya.Api.Middleware;
+namespace Zemlya.Api.Extensions;
 
 public static class DependencyInjection
 {
