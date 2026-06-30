@@ -46,6 +46,12 @@ public static class DependencyInjection
         public IServiceCollection AddInfrastructureServices()
         {
             services.AddHttpClient<IWeatherService, MockWeatherService>();
+            services.AddTransient<AgroClimaticZoneResolver>();
+            services.AddTransient<CropGrowthStageResolver>();
+            services.AddTransient<ForecastAggregator>();
+            services.AddTransient<ReclamationScheduler>();
+            services.AddTransient<IrrigationScheduler>();
+            services.AddTransient<FertilizationScheduler>();
             services.AddTransient<ZemlyaEngine>();
         
             return services;
