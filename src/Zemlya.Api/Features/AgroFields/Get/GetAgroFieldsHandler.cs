@@ -1,11 +1,11 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Zemlya.Api.Features.Recommendations;
 using Zemlya.Api.Infrastructure.Database;
 
 namespace Zemlya.Api.Features.AgroFields.Get;
 
-public sealed record GetAgroFieldsRequest(int Page, int SizeOfPage) : IRequest<PaginationAgroFieldsResponse>;
+public sealed record GetAgroFieldsRequest(int Page = 0, int SizeOfPage = 10) : IRequest<PaginationAgroFieldsResponse>;
+
 public sealed record GetAgroFieldsResponse(
     Guid Id,
     string Name,
@@ -14,33 +14,63 @@ public sealed record GetAgroFieldsResponse(
     decimal SizeHectares,
     decimal Latitude,
     decimal Longitude,
+    string Oblast,
+    string ShellingImpactLevel,
+    DateTime SowingDate,
     DateTime CreatedAt,
     DateTime UpdatedAt,
-    ICollection<Guid> RecommendationsId);
+    ICollection<RecommendationDto> Recommendations);
+
+public sealed record RecommendationDto(
+    Guid Id,
+    string ActionType,
+    DateTime ScheduledFor,
+    decimal Amount,
+    bool IsCompleted,
+    string? Description
+);
+
 public sealed record PaginationAgroFieldsResponse(
     ICollection<GetAgroFieldsResponse> Fields,
     int TotalCount);
+
 public class GetAgroFieldsHandler(DatabaseContext context) : IRequestHandler<GetAgroFieldsRequest, PaginationAgroFieldsResponse>
 {
     public async Task<PaginationAgroFieldsResponse> Handle(GetAgroFieldsRequest request, CancellationToken cancellationToken)
     {
-        return new PaginationAgroFieldsResponse(
-            await context.AgroFields
+        var totalCount = await context.AgroFields.CountAsync(cancellationToken);
+
+        var fields = await context.AgroFields
+            .OrderBy(af => af.CreatedAt)
             .Skip(request.Page * request.SizeOfPage)
             .Take(request.SizeOfPage)
             .Select(af => new GetAgroFieldsResponse(
-            af.Id,
-            af.Name,
-            af.CropType.ToString(),
-            af.SoilType.ToString(),
-            af.SizeHectares,
-            af.Latitude,
-            af.Longitude,
-            af.CreatedAt,
-            af.UpdatedAt,
-            af.Recommendations.Select(r => r.Id).ToList()
+                af.Id,
+                af.Name,
+                af.CropType.ToString(),
+                af.SoilType.ToString(),
+                af.SizeHectares,
+                af.Latitude,
+                af.Longitude,
+                af.Oblast,
+                af.ShellingImpactLevel.ToString(),
+                af.SowingDate,
+                af.CreatedAt,
+                af.UpdatedAt,
+                af.Recommendations
+                    .OrderBy(r => r.ScheduledFor)
+                    .Select(r => new RecommendationDto(
+                        r.Id,
+                        r.ActionType.ToString(),
+                        r.ScheduledFor,
+                        r.Amount,
+                        r.IsCompleted,
+                        r.Description
+                    ))
+                    .ToList()
             ))
-            .ToListAsync(),
-            await context.AgroFields.CountAsync());
+            .ToListAsync(cancellationToken);
+
+        return new PaginationAgroFieldsResponse(fields, totalCount);
     }
 }
