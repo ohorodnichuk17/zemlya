@@ -3,6 +3,7 @@ import './App.css'
 import NavigationLayout from './components/NavigationLayout'
 import { FieldsPage } from './pages/FieldsPage'
 import { FieldDashboardPage } from './pages/FieldDashboardPage'
+import { AboutPage } from './pages/AboutPage'
 
 function App() {
 
@@ -13,7 +14,7 @@ function App() {
                <Route index element={<FieldsPage />} />
                <Route path="/fields/:id" element={<FieldDashboardPage />} />
                <Route path="/page2" element={<div>Pricing</div>} />
-               <Route path="/page3" element={<div>Blog</div>} />
+               <Route path="/about" element={<AboutPage />} />
             </Route>
          </Routes>
       </>

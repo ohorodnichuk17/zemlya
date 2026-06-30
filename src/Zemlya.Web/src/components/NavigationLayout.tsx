@@ -12,7 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 import EcoIcon from '@mui/icons-material/Spa';
 import { Outlet, useNavigate } from "react-router-dom";
 
-const pages = [['Поля', "/"], ['Показники', "/page2"], ['Про проєкт', "/page3"]];
+const pages = [['Поля', "/"], ['Показники', "/page2"], ['Про проєкт', "/about"]];
 
 function NavigationLayout() {
    const navigate = useNavigate();
