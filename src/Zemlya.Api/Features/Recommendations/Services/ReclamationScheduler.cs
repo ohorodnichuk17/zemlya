@@ -1,6 +1,6 @@
 using Zemlya.Api.Features.AgroFields;
 
-namespace Zemlya.Api.Features.Recommendations.Generate;
+namespace Zemlya.Api.Features.Recommendations.Services;
 
 public class ReclamationScheduler
 {

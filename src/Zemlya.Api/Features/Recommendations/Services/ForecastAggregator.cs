@@ -1,6 +1,7 @@
+using Zemlya.Api.Features.Recommendations.Models;
 using Zemlya.Api.Infrastructure.Weather;
 
-namespace Zemlya.Api.Features.Recommendations.Generate;
+namespace Zemlya.Api.Features.Recommendations.Services;
 
 public class ForecastAggregator
 {

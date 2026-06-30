@@ -1,4 +1,4 @@
-namespace Zemlya.Api.Features.Recommendations.Generate;
+namespace Zemlya.Api.Features.Recommendations.Models;
 
 public record AgroContext(
     UkrainianAgroZone Zone, 

@@ -1,4 +1,6 @@
-namespace Zemlya.Api.Features.Recommendations.Generate;
+using Zemlya.Api.Features.Recommendations.Models;
+
+namespace Zemlya.Api.Features.Recommendations.Services;
 
 public class AgroClimaticZoneResolver
 {
