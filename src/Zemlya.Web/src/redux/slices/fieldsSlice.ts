@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { IFieldsInitialState } from "../../interfaces/fields/fields"
-import { getFieldsAsync } from "../actions/fieldsActions";
+import { getFieldsAsync} from "../actions/fieldsActions";
 import type { IValidationError } from "../../interfaces/general";
 
 const initialState : IFieldsInitialState = {
