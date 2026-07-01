@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -8,11 +8,29 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import MenuItem from '@mui/material/MenuItem';
 import { api } from '../axios/api';
+import { MapContainer, Marker, TileLayer, useMapEvents } from 'react-leaflet';
+import { Icon, type LatLngTuple } from 'leaflet';
+import { IconButton } from '@mui/material';
+import 'leaflet/dist/leaflet.css';
+import point from '../assets/images/point.png';
+import { createFieldAsync, getOblastAsync } from '../redux/actions/fieldsActions';
+import { useAppDispatch } from '../redux/hooks';
+
+
 
 interface AddFieldModalProps {
   open: boolean;
   onClose: () => void;
   onSubmitSuccess: () => void;
+}
+
+function ClickHandler({ onClick }: { onClick: (lat: number, lng: number) => void }) {
+  useMapEvents({
+    click(e) {
+      onClick(e.latlng.lat, e.latlng.lng);
+    },
+  });
+  return null;
 }
 
 const OBLASTS_COORDINATES: Record<string, { lat: number; lng: number }> = {
@@ -48,12 +66,40 @@ export const AddFieldModal = ({ open, onClose, onSubmitSuccess }: AddFieldModalP
   const [soilType, setSoilType] = useState(1); // Chernozem
   const [size, setSize] = useState('10');
   const [oblast, setOblast] = useState('Київська');
+  const [coords, setCoords] = useState<LatLngTuple>([50.4501, 30.5234]); // Default to Ukraine center
   const [shellingLevel, setShellingLevel] = useState(0); // None
+  const [isMapVisible, setIsMapVisible] = useState(false);
   const [sowingDate, setSowingDate] = useState(
     new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
   );
   const [loading, setLoading] = useState(false);
+  const dispatch = useAppDispatch();
 
+
+  useEffect(() => {
+    setIsMapVisible(false);
+  }, [open]);
+
+
+  const handleMapClick = async (lat: number, lng: number) => {
+    const result = await dispatch(getOblastAsync({ lat: lat, lng: lng }));
+
+    if (getOblastAsync.fulfilled.match(result)) {
+      if (result.payload === null) {
+        setCoords([OBLASTS_COORDINATES["Київська"].lat, OBLASTS_COORDINATES["Київська"].lng])
+        setOblast("Київська");
+      }
+      else {
+        const oblastFromApi = result.payload.split(" ")[0];
+        if (oblastFromApi in OBLASTS_COORDINATES) {
+          setCoords([lat, lng])
+          setOblast(oblastFromApi);
+        }
+      }
+
+
+    }
+  }
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
@@ -74,20 +120,12 @@ export const AddFieldModal = ({ open, onClose, onSubmitSuccess }: AddFieldModalP
       sowingDate: new Date(sowingDate).toISOString()
     };
 
-    try {
-      await api.post('/api/fields', payload);
-      setName('');
-      setCropType(1);
-      setSoilType(1);
-      setSize('10');
-      setShellingLevel(0);
-      onSubmitSuccess();
-    } catch (err) {
-      console.error(err);
-      alert('Помилка при створенні ділянки. Перевірте з\'єднання.');
-    } finally {
+    const result = await dispatch(createFieldAsync(payload));
+    if (createFieldAsync.fulfilled.match(result)) {
       setLoading(false);
+      onSubmitSuccess();
     }
+
   };
 
   return (
@@ -95,7 +133,45 @@ export const AddFieldModal = ({ open, onClose, onSubmitSuccess }: AddFieldModalP
       <DialogTitle sx={{ fontWeight: 700, borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
         Додати нову ділянку поля
       </DialogTitle>
-      <form onSubmit={handleSubmit}>
+      {isMapVisible == true ? (
+        <>
+          <DialogContent sx={{ display: 'flex', flexDirection: 'column', width: '100%', height: '328px', padding: '16px', boxSizing: 'border-box', overflow: 'hidden' }}>
+            <MapContainer
+              center={coords}
+              zoom={13}
+              scrollWheelZoom={false}
+              style={{ height: "100%", width: "100%" }}
+
+            >
+              <TileLayer
+                attribution="Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics"
+                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+              />
+              <Marker icon={new Icon({ iconUrl: point, iconSize: [32, 32] })} position={coords} draggable={true} eventHandlers={{
+                dragend: (e) => {
+                  const marker = e.target;
+                  const position = marker.getLatLng();
+                  //setCoords([position.lat, position.lng]);
+                  handleMapClick(position.lat, position.lng);
+                }
+              }}>
+              </Marker>
+              <ClickHandler onClick={(lat, lng) => {
+                //setCoords([lat, lng])
+                handleMapClick(lat, lng);
+              }} />
+            </MapContainer>
+
+          </DialogContent>
+          <DialogActions sx={{ padding: '16px 24px', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
+            <Button onClick={() => setIsMapVisible(false)} color="inherit" disabled={loading}>
+              Вийти
+            </Button>
+
+          </DialogActions>
+        </>
+
+      ) : <form onSubmit={handleSubmit}>
         <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, pt: 3 }}>
           <TextField
             label="Назва поля"
@@ -142,17 +218,26 @@ export const AddFieldModal = ({ open, onClose, onSubmitSuccess }: AddFieldModalP
               value={size}
               onChange={e => setSize(e.target.value)}
             />
-            <TextField
-              select
-              label="Область України"
-              fullWidth
-              value={oblast}
-              onChange={e => setOblast(e.target.value)}
-            >
-              {Object.keys(OBLASTS_COORDINATES).map(o => (
-                <MenuItem key={o} value={o}>{o}</MenuItem>
-              ))}
-            </TextField>
+            <Box sx={{ display: 'flex', width: '100%', columnGap: 1, alignItems: 'center' }}>
+              <TextField
+                select
+                label="Область України"
+                fullWidth
+                value={oblast}
+                onChange={e => {
+                  setOblast(e.target.value)
+                  setCoords([OBLASTS_COORDINATES[e.target.value].lat, OBLASTS_COORDINATES[e.target.value].lng]);
+                }}
+              >
+                {Object.keys(OBLASTS_COORDINATES).map(o => (
+                  <MenuItem key={o} value={o}>{o}</MenuItem>
+                ))}
+              </TextField>
+              <IconButton onClick={() => setIsMapVisible(true)} color="primary" >
+                📍
+              </IconButton>
+            </Box>
+
           </Box>
 
           <Box sx={{ display: 'flex', gap: 2, flexDirection: { xs: 'column', sm: 'row' } }}>
@@ -178,21 +263,23 @@ export const AddFieldModal = ({ open, onClose, onSubmitSuccess }: AddFieldModalP
               <MenuItem value={3}>Високий (Прямі влучання)</MenuItem>
             </TextField>
           </Box>
+
         </DialogContent>
         <DialogActions sx={{ padding: '16px 24px', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
           <Button onClick={onClose} color="inherit" disabled={loading}>
             Скасувати
           </Button>
-          <Button 
-            type="submit" 
-            variant="contained" 
+          <Button
+            type="submit"
+            variant="contained"
             sx={{ backgroundColor: '#2E7D32', '&:hover': { backgroundColor: '#1B5E20' }, textTransform: 'none', fontWeight: 600 }}
             disabled={loading}
           >
             Створити ділянку
           </Button>
         </DialogActions>
-      </form>
+      </form>}
+
     </Dialog>
   );
 };

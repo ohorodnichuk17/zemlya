@@ -30,3 +30,14 @@ export interface IPaginationFieldsResponse {
 export interface IFieldsInitialState {
    paginationFieldsResponse: IPaginationFieldsResponse | null;
 }
+export interface IFieldCreateRequest {
+   name: string;
+   cropType: number;
+   soilType: number;
+   sizeHectares: number;
+   latitude: number;
+   longitude: number;
+   oblast: string;
+   shellingImpactLevel: number;
+   sowingDate: string;
+}
