@@ -5,7 +5,7 @@ namespace Zemlya.Api.Features.Recommendations.Services;
 
 public class CropGrowthStageResolver
 {
-    public CropGrowthStage GetGrowthStage(CropType crop, DateTime sowingDate)
+    public CropGrowthStage ResolveGrowthStage(CropType crop, DateTime sowingDate)
     {
         var daysSinceSowing = (DateTime.UtcNow - sowingDate).Days;
 

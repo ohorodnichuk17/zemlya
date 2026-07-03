@@ -12,7 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 import EcoIcon from '@mui/icons-material/Spa';
 import { Outlet, useNavigate } from "react-router-dom";
 
-const pages = [['Поля', "/"], ['Показники', "/page2"], ['Про проєкт', "/about"]];
+const pages = [['Поля', "/"], ['Про проєкт', "/about"]];
 
 function NavigationLayout() {
    const navigate = useNavigate();
@@ -116,7 +116,6 @@ function NavigationLayout() {
                      ))}
                   </Box>
 
-                  {/* Світло-синя та жовта плашка (Прапор України) */}
                   <Box sx={{ display: 'flex', flexDirection: 'column', width: '24px', height: '16px', borderRadius: '2px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.2)' }}>
                      <Box sx={{ flex: 1, backgroundColor: '#0057B7' }} />
                      <Box sx={{ flex: 1, backgroundColor: '#FFD700' }} />
