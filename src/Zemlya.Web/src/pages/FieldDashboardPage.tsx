@@ -193,17 +193,6 @@ export const FieldDashboardPage = () => {
     doc.addImage(brand, 'PNG', pageWidth - 60, pageHeight - 30, 40, 15);
 
     doc.save(`Звіт_${new Date().getFullYear()}_${new Date().getMonth() + 1}_${new Date().getHours()}_${new Date().getMinutes()}_${new Date().getSeconds()}.pdf`);
-    /*doc.text(`Прогноз: ${data?.forecast.length == 0 && "Відсутній"}`, 10, yOffset += 10);
-    if (data!.forecast.length > 0) {
-      data!.forecast.forEach((forecastItem, index) => {
-        
-      })
-    }*/
-
-
-
-
-
   }
 
   if (loading) {

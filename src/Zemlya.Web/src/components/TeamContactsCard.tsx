@@ -52,7 +52,7 @@ export const TeamContactsCard = () => {
                   <TeamContacts
                      name="Зубар Назарій"
                      role="Fullstack .NET & React Developer"
-                     email="@gmail.com"
+                     email="nzubar4@gmail.com"
                      githubUsername="zubnaz"
                      tgUsername="ten3een"
                   />
