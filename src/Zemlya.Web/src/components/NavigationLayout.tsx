@@ -32,7 +32,7 @@ function NavigationLayout() {
          <AppBar position="static" sx={{ backgroundColor: '#2E7D32', borderBottom: '3px solid #FBC02D', zIndex: 5 }}>
             <Container>
                <Toolbar disableGutters>
-                  <EcoIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, color: '#FBC02D' }} />
+                  <img src="/logo.svg" alt="Zemlya Logo" style={{ width: '35px', height: '35px', marginRight: '8px' }} />
                   <Typography
                      variant="h6"
                      noWrap
