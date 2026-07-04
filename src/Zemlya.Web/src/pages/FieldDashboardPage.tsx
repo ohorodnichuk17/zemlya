@@ -192,7 +192,7 @@ export const FieldDashboardPage = () => {
 
     doc.addImage(brand, 'PNG', pageWidth - 60, pageHeight - 30, 40, 15);
 
-    doc.save(`Звіт_${new Date().getFullYear()}_${new Date().getMonth() + 1}_${new Date().getHours()}_${new Date().getMinutes()}_${new Date().getSeconds()}.pdf`);
+    doc.save(`Звіт_${format(new Date(),'yyyy-MM-dd-HH-mm-ss')}.pdf`);
   }
 
   if (loading) {
