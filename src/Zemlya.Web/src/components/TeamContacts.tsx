@@ -27,19 +27,25 @@ export const TeamContacts = ({ name, role, email, githubUsername, tgUsername }: 
                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <EmailIcon sx={{ fontSize: 18, color: '#2E7D32' }} />
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                     {email}
+                     <a href={`mailto:${email}`} style={{ color: 'inherit', textDecoration: 'none' }} onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'} onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}>
+                        {email}
+                     </a>
                   </Typography>
                </Box>
                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <GitHubIcon sx={{ fontSize: 18, color: '#2E7D32' }} />
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                     {githubUsername}
+                     <a href={`https://github.com/${githubUsername}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }} onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'} onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}>
+                        {githubUsername}
+                     </a>
                   </Typography>
                </Box>
                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <TelegramIcon sx={{ fontSize: 18, color: '#2E7D32' }} />
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                     @{tgUsername}
+                     <a href={`https://t.me/${tgUsername}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }} onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'} onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}>
+                        @{tgUsername}
+                     </a>
                   </Typography>
                </Box>
             </Box>
