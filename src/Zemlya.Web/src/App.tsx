@@ -13,7 +13,6 @@ function App() {
             <Route path="/" element={<NavigationLayout />}>
                <Route index element={<FieldsPage />} />
                <Route path="/fields/:id" element={<FieldDashboardPage />} />
-               <Route path="/page2" element={<div>Pricing</div>} />
                <Route path="/about" element={<AboutPage />} />
             </Route>
          </Routes>

@@ -7,7 +7,6 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import MenuItem from '@mui/material/MenuItem';
-import { api } from '../axios/api';
 import { MapContainer, Marker, TileLayer, useMapEvents } from 'react-leaflet';
 import { Icon, type LatLngTuple } from 'leaflet';
 import { IconButton } from '@mui/material';

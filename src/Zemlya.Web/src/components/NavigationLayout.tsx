@@ -12,7 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 import EcoIcon from '@mui/icons-material/Spa';
 import { Outlet, useNavigate } from "react-router-dom";
 
-const pages = [['Поля', "/"], ['Показники', "/page2"], ['Про проєкт', "/about"]];
+const pages = [['Поля', "/"], ['Про проєкт', "/about"]];
 
 function NavigationLayout() {
    const navigate = useNavigate();
@@ -32,7 +32,7 @@ function NavigationLayout() {
          <AppBar position="static" sx={{ backgroundColor: '#2E7D32', borderBottom: '3px solid #FBC02D', zIndex: 5 }}>
             <Container>
                <Toolbar disableGutters>
-                  <EcoIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, color: '#FBC02D' }} />
+                  <img src="/logo.svg" alt="Zemlya Logo" style={{ width: '35px', height: '35px', marginRight: '8px' }} />
                   <Typography
                      variant="h6"
                      noWrap
@@ -116,7 +116,6 @@ function NavigationLayout() {
                      ))}
                   </Box>
 
-                  {/* Світло-синя та жовта плашка (Прапор України) */}
                   <Box sx={{ display: 'flex', flexDirection: 'column', width: '24px', height: '16px', borderRadius: '2px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.2)' }}>
                      <Box sx={{ flex: 1, backgroundColor: '#0057B7' }} />
                      <Box sx={{ flex: 1, backgroundColor: '#FFD700' }} />

@@ -21,7 +21,7 @@ public class ZemlyaEngine(
         var zone = zoneResolver.ResolveZone(field.Oblast);
 
         // 2. Розрахунок фази росту культури за датою посіву
-        var growthStage = cropGrowthResolver.GetGrowthStage(field.CropType, field.SowingDate);
+        var growthStage = cropGrowthResolver.ResolveGrowthStage(field.CropType, field.SowingDate);
         var context = new AgroContext(zone, growthStage);
 
         logger.LogInformation("Generating schedule for field {Name} ({CropType}, {SoilType}), Oblast: {Oblast}, Zone: {Zone}, Stage: {GrowthStage}", 

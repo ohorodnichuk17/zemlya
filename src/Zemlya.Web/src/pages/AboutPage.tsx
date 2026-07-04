@@ -3,16 +3,20 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import Chip from '@mui/material/Chip';
+import Grid from '@mui/material/Grid';
 import SpaIcon from '@mui/icons-material/Spa';
 import ShieldIcon from '@mui/icons-material/Shield';
-import WaterDropIcon from '@mui/icons-material/WaterDrop';
-import AgricultureIcon from '@mui/icons-material/Agriculture';
 import InfoIcon from '@mui/icons-material/Info';
+import CodeIcon from '@mui/icons-material/Code';
+import MapIcon from '@mui/icons-material/Map';
+import SettingsIcon from '@mui/icons-material/Settings';
+import { TeamContactsCard } from '../components/TeamContactsCard';
 
 export const AboutPage = () => {
    return (
       <Container sx={{ py: 6, display: 'flex', flexDirection: 'column', gap: 4, flexGrow: 1, backgroundColor: '#F1F8E9' }} maxWidth="md">
-         <Box sx={{ textAlign: 'center', mb: 2 }}>
+         <Box sx={{ textAlign: 'center', mb: 2, mt: 1 }}>
             <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: '8px', mb: 1 }}>
                <SpaIcon sx={{ fontSize: '40px', color: '#2E7D32' }} />
                <Typography variant="h3" sx={{ fontWeight: 800, color: '#1B5E20', fontFamily: "'Outfit', sans-serif" }}>
@@ -22,7 +26,7 @@ export const AboutPage = () => {
             <Typography variant="h5" sx={{ fontWeight: 700, color: '#2E7D32', mb: 2 }}>
                Екологічна платформа розумного землеробства та рекультивації
             </Typography>
-            <Typography variant="body1" color="text.secondary" sx={{ maxWidth: '600px', margin: '0 auto', lineHeight: 1.6 }}>
+            <Typography variant="body1" color="text.secondary" sx={{ maxWidth: '650px', margin: '0 auto', lineHeight: 1.6 }}>
                Проєкт розроблено в рамках хакатону <strong>Noosphere Engineering School - Future in Action</strong>.
                Наша мета — зберегти родючість української землі, мінімізувати хімічний слід та допомогти у відновленні ґрунтів після бойових дій.
             </Typography>
@@ -38,84 +42,104 @@ export const AboutPage = () => {
                   Залишки боєприпасів забруднюють ґрунт важкими металами (свинцем, кадмієм, хромом) та залишками сірки й вибухових речовин.
                </Typography>
                <Typography variant="body1" sx={{ lineHeight: 1.7, color: 'text.primary' }}>
-                  Платформа <strong>Zemlya</strong> поєднує метеорологічні дані в реальному часі з агрономічними алгоритмами, щоб розрахувати точні потреби в поливі та добривах. Це запобігає вимиванню зайвих хімікатів у підземні води та пропонує обґрунтовані рішення для рекультивації пошкоджених ділянок.
+                  Платформа <strong>Zemlya</strong> поєднує метеорологічні дані в реальному часі з агрономічними алгоритмами, щоб розрахувати
+                  точні потреби в поливі та добривах. Це запобігає вимиванню зайвих хімікатів у підземні води та пропонує науково обґрунтовані
+                  рішення для рекультивації пошкоджених ділянок за допомогою природних сорбентів (цеоліту та біочару).
                </Typography>
             </CardContent>
          </Card>
 
-         <Typography variant="h5" sx={{ fontWeight: 800, color: '#1B5E20', textAlign: 'center', mt: 2 }}>
-            Основний функціонал MVP
-         </Typography>
+         <Card sx={{ borderRadius: '16px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)', border: '1px solid rgba(0,0,0,0.06)' }}>
+            <CardContent sx={{ p: 4 }}>
+               <Typography variant="h5" sx={{ fontWeight: 800, color: '#1B5E20', display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
+                  <CodeIcon sx={{ color: '#2E7D32' }} /> Технологічний стек MVP
+               </Typography>
 
-         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 3 }}>
-            <Card sx={{ borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.04)', border: '1px solid rgba(0,0,0,0.05)' }}>
-               <CardContent sx={{ p: 3, display: 'flex', gap: 2 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '48px', height: '48px', borderRadius: '12px', backgroundColor: '#E0F7FA', color: '#00ACC1', flexShrink: 0 }}>
-                     <WaterDropIcon />
-                  </Box>
-                  <Box>
-                     <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#006064', mb: 0.5 }}>
-                        Прогноз Вологості та Полив
+               <Grid container spacing={3}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                     <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#1B5E20', mb: 1.5 }}>
+                        Backend
                      </Typography>
-                     <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.5 }}>
-                        Інтеграція з погодою скасовує заплановане зрошення, якщо прогнозуються дощі, економлячи водні ресурси та запобігаючи перезволоженню.
+                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                        <Chip label=".NET 10" color="success" variant="outlined" />
+                        <Chip label="Minimal APIs" color="success" variant="outlined" />
+                        <Chip label="MediatR" color="success" variant="outlined" />
+                        <Chip label="Carter" color="success" variant="outlined" />
+                        <Chip label="EF Core" color="success" variant="outlined" />
+                        <Chip label="PostgreSQL" color="success" variant="outlined" />
+                        <Chip label="Vertical Slice Architecture" color="success" variant="outlined" />
+                     </Box>
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                     <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#1B5E20', mb: 1.5 }}>
+                        Frontend
                      </Typography>
-                  </Box>
-               </CardContent>
-            </Card>
+                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                        <Chip label="React 19" color="primary" variant="outlined" />
+                        <Chip label="TypeScript" color="primary" variant="outlined" />
+                        <Chip label="Material UI" color="primary" variant="outlined" />
+                        <Chip label="Redux Toolkit" color="primary" variant="outlined" />
+                        <Chip label="React Leaflet" color="primary" variant="outlined" />
+                        <Chip label="Recharts" color="primary" variant="outlined" />
+                        <Chip label="Axios" color="primary" variant="outlined" />
+                     </Box>
+                  </Grid>
+               </Grid>
+            </CardContent>
+         </Card>
 
-            <Card sx={{ borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.04)', border: '1px solid rgba(0,0,0,0.05)' }}>
-               <CardContent sx={{ p: 3, display: 'flex', gap: 2 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '48px', height: '48px', borderRadius: '12px', backgroundColor: '#E8F5E9', color: '#4CAF50', flexShrink: 0 }}>
-                     <AgricultureIcon />
-                  </Box>
-                  <Box>
-                     <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#1B5E20', mb: 0.5 }}>
-                        Контроль Хімічного Сліду
-                     </Typography>
-                     <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.5 }}>
-                        Алгоритм адаптує дозування N-P-K добрив залежно від типу ґрунту та фази росту культури. Запобігає опікам рослин та накопиченню нітратів.
-                     </Typography>
-                  </Box>
-               </CardContent>
-            </Card>
+         <Card sx={{ borderRadius: '16px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)', border: '1px solid rgba(0,0,0,0.06)' }}>
+            <CardContent sx={{ p: 4 }}>
+               <Typography variant="h5" sx={{ fontWeight: 800, color: '#1B5E20', display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
+                  <SettingsIcon sx={{ color: '#2E7D32' }} /> Дорожня карта та плани розвитку
+               </Typography>
 
-            <Card sx={{ borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.04)', border: '1px solid rgba(0,0,0,0.05)' }}>
-               <CardContent sx={{ p: 3, display: 'flex', gap: 2 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '48px', height: '48px', borderRadius: '12px', backgroundColor: '#FFF3E0', color: '#FF9800', flexShrink: 0 }}>
-                     <ShieldIcon />
+               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <Box sx={{ display: 'flex', gap: 2 }}>
+                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', borderRadius: '8px', backgroundColor: '#E8F5E9', color: '#2E7D32', flexShrink: 0 }}>
+                        <ShieldIcon sx={{ fontSize: '20px' }} />
+                     </Box>
+                     <Box>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                           Захищений Кабінет Фермера (Private Farm Workspace)
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                           Сьогодні наш MVP демонструє відкриту архітектуру даних для наочності. Проте наш наступний крок у розвитку Zemlya — це впровадження Захищеного Кабінету Фермера. Це дозволить вирішити три ключові бізнес-задачі:
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" component="div" sx={{ pl: 2, borderLeft: '2px solid #2E7D32', display: 'flex', flexDirection: 'column', gap: 0.5, mb: 1 }}>
+                           <div>• <strong>Комерційна таємниця:</strong> Фермери отримають закритий контур для своїх агроділянок, доступ до яких матиме лише їхня команда.</div>
+                           <div>• <strong>Рольова модель (RBAC):</strong> Власник господарства зможе надавати різні рівні доступу — наприклад, повний доступ для Головного агронома (внесення добрив, зміна планів) та доступ "тільки для читання" для інвесторів або банківських аудиторів.</div>
+                           <div>• <strong>Персоналізований AI-супровід:</strong> Кабінет дозволить ШІ накопичувати історичні дані конкретного господарства, роблячи прогнози врожайності та мінімізації хімічного сліду ще точнішими з кожним роком.</div>
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic', color: '#1B5E20', fontWeight: 600 }}>
+                           «Ми закладаємо архітектуру з розрахунком на Multi-tenancy, щоб кожне агропідприємство працювало в ізольованому безпечному середовищі, але на єдиній хмарній платформі».
+                        </Typography>
+                     </Box>
                   </Box>
-                  <Box>
-                     <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#E65100', mb: 0.5 }}>
-                        Відновлення після Обстрілів
-                     </Typography>
-                     <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.5 }}>
-                        Система автоматично оцінює ступінь пошкоджень та рекомендує дозування біочару чи цеоліту для адсорбції важких металів.
-                     </Typography>
-                  </Box>
-               </CardContent>
-            </Card>
 
-            <Card sx={{ borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.04)', border: '1px solid rgba(0,0,0,0.05)' }}>
-               <CardContent sx={{ p: 3, display: 'flex', gap: 2 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '48px', height: '48px', borderRadius: '12px', backgroundColor: '#EDE7F6', color: '#673AB7', flexShrink: 0 }}>
-                     <SpaIcon />
-                  </Box>
-                  <Box>
-                     <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#311B92', mb: 0.5 }}>
-                        Фіторемедіація Соняшником
-                     </Typography>
-                     <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.5 }}>
-                        Попереджає фермерів, що соняшник на обстріляних землях накопичує свинець, тому його врожай слід пускати лише на технічні цілі (біодизель).
-                     </Typography>
-                  </Box>
-               </CardContent>
-            </Card>
-         </Box>
+                  <Box sx={{ display: 'flex', gap: 2 }}>
+                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', borderRadius: '8px', backgroundColor: '#E8F5E9', color: '#2E7D32', flexShrink: 0 }}>
+                        <MapIcon sx={{ fontSize: '20px' }} />
+                     </Box>
 
-         <Box sx={{ mt: 4, pt: 4, borderTop: '1px solid rgba(0,0,0,0.06)', textAlign: 'center' }}>
-            <Typography variant="body2" color="text.secondary">
-               Розроблено командою проєкту <strong>Zemlya</strong> • 2026
+                     <Box>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                           Експорт у бізнес-звіти (PDF/Excel)
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                           Автоматичне формування професійних звітів у форматах PDF та Excel для бухгалтерії, керівництва, інвесторів і партнерів. Звіти міститимуть інформацію про стан полів, виконані агротехнічні роботи, використані ресурси, рекомендації ШІ та ключові показники ефективності, що спростить фінансову звітність, аудит і прийняття управлінських рішень.
+                        </Typography>
+                     </Box>
+                  </Box>
+               </Box>
+            </CardContent>
+         </Card>
+
+         <TeamContactsCard />
+
+         <Box sx={{ textAlign: 'center', mt: 2 }}>
+            <Typography variant="caption" color="text.secondary">
+               Zemlya • 2026
             </Typography>
          </Box>
       </Container>

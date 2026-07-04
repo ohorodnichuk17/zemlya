@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 export const CardComponent = (props: { cardInfo: IFieldsResponse }) => {
    const navigate = useNavigate();
-   
+
    const getCropImage = (crop: string) => {
       switch (crop.toLowerCase()) {
          case 'wheat':
@@ -22,8 +22,9 @@ export const CardComponent = (props: { cardInfo: IFieldsResponse }) => {
             return fieldBackground;
       }
    };
-   
+
    return (
+
       <Card sx={{ 
          width: 280, 
          height: 370,
@@ -54,12 +55,12 @@ export const CardComponent = (props: { cardInfo: IFieldsResponse }) => {
                </Typography>
             </Box>
          </CardContent>
-         <CardActions sx={{ padding: '12px 16px', borderTop: '1px solid rgba(0,0,0,0.04)' }}>
-            <Button 
-               size="small" 
-               variant="contained" 
-               sx={{ 
-                  backgroundColor: '#4CAF50', 
+         <CardActions sx={{ padding: '12px 16px 18px', borderTop: '1px solid rgba(0,0,0,0.04)' }}>
+            <Button
+               size="small"
+               variant="contained"
+               sx={{
+                  backgroundColor: '#4CAF50',
                   '&:hover': { backgroundColor: '#388E3C' },
                   textTransform: 'none',
                   fontWeight: 600
