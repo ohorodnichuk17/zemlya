@@ -26,7 +26,7 @@ export const CardComponent = (props: { cardInfo: IFieldsResponse }) => {
    return (
       <Card sx={{
          width: 280,
-         height: 390,
+         height: 360,
          display: 'flex',
          flexDirection: 'column',
          boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
@@ -54,7 +54,7 @@ export const CardComponent = (props: { cardInfo: IFieldsResponse }) => {
                </Typography>
             </Box>
          </CardContent>
-         <CardActions sx={{ padding: '12px 16px', borderTop: '1px solid rgba(0,0,0,0.04)' }}>
+         <CardActions sx={{ padding: '12px 16px 18px', borderTop: '1px solid rgba(0,0,0,0.04)' }}>
             <Button
                size="small"
                variant="contained"
