@@ -26,7 +26,7 @@ export const CardComponent = (props: { cardInfo: IFieldsResponse }) => {
    return (
       <Card sx={{ 
          width: 280, 
-         height: 360,
+         height: 370,
          display: 'flex', 
          flexDirection: 'column',
          boxShadow: '0 4px 12px rgba(0,0,0,0.05)',

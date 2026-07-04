@@ -15,6 +15,13 @@ import { SafetyAdvisoryAlert } from '../components/SafetyAdvisoryAlert';
 import { RecommendationsTimeline } from '../components/RecommendationsTimeline';
 import { AnalyticsCharts } from '../components/AnalyticsCharts';
 import confetti from 'canvas-confetti';
+import jsPDF from "jspdf";
+import '../assets/fonts/OpenSans-Regular-normal.js';
+import { format } from 'date-fns';
+import { autoTable } from 'jspdf-autotable'
+import brand from '../assets/images/brand.png';
+
+
 
 interface Recommendation {
   id: string;
@@ -87,14 +94,14 @@ export const FieldDashboardPage = () => {
       // Оновити локальний стан перед запитом для кращого UX
       setData({
         ...data,
-        recommendations: data.recommendations.map(r => 
+        recommendations: data.recommendations.map(r =>
           r.id === recId ? { ...r, isCompleted: true } : r
         )
       });
 
       // Надіслати POST запит на бекенд
       await api.post(`/api/recommendations/${recId}/complete`);
-      
+
       // Запустити конфеті ефект
       confetti({
         particleCount: 100,
@@ -108,6 +115,96 @@ export const FieldDashboardPage = () => {
       fetchDashboard();
     }
   };
+
+  const handleDownloadReport = async () => {
+    const doc = new jsPDF();
+
+    doc.setFont('OpenSans-Regular', 'normal');
+
+
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+
+    doc.setLineWidth(1);
+    doc.setDrawColor(46, 125, 50);
+    doc.rect(5, 5, pageWidth - 10, pageHeight - 10);
+
+    let yOffset = 0;
+
+
+    doc.setFontSize(21);
+
+    doc.text('Звіт врожайності та стану поля', pageWidth / 2, yOffset += 20, { align: 'center' });
+    doc.setFontSize(15);
+
+    doc.text(`Поле: ${data?.fieldName || 'Невідомо'}`, 10, yOffset += 20);
+    doc.text(`Культура: ${data?.crop || 'Невідомо'}`, 10, yOffset += 10);
+    doc.text(`Тип грунту: ${data?.soil || 'Невідомо'}`, 10, yOffset += 10);
+    doc.text(`Площа (Га): ${data?.sizeHectares || 'Невідомо'}`, 10, yOffset += 10);
+    doc.text(`Область: ${data?.oblast || 'Невідомо'}`, 10, yOffset += 10);
+    doc.text(`Зона: ${data?.agroClimaticZone || 'Невідомо'}`, 10, yOffset += 10);
+    doc.text(`Вплив війни: ${data?.shellingImpactLevel || 'Невідомо'}`, 10, yOffset += 10);
+    doc.text(`Дата посіву: ${data?.sowingDate ? format(data!.sowingDate, 'dd.MM.yyyy') : 'Невідомо'}`, 10, yOffset += 10);
+    doc.text(`Днів від посіву: ${data?.daysSinceSowing || 'Невідомо'}`, 10, yOffset += 10);
+    doc.text(`Фаза росту: ${data?.growthStage || 'Невідомо'}`, 10, yOffset += 10);
+    doc.text(`Поточна температура: ${data?.currentTemperature || 'Невідомо'} °C`, 10, yOffset += 10);
+    doc.text(`Вологість: ${data?.currentHumidity || 'Невідомо'} %`, 10, yOffset += 10);
+    doc.text(`Опади (мм): ${data?.rainAmount || 'Невідомо'}`, 10, yOffset += 10);
+    doc.text(`Опис погоди: ${data?.weatherDescription || 'Невідомо'}`, 10, yOffset += 10);
+
+    if (data?.forecast && data.forecast.length > 0) {
+      doc.text(`Прогноз :`, 10, yOffset += 10);
+      const datesOfForecast = data?.forecast.map(forecastItem => format(new Date(forecastItem.dateText), 'dd-MM-yyyy'))
+        .filter((value, index, self) => self.indexOf(value) === index);
+      const averageTemperature = datesOfForecast?.map(date => {
+        const items = data?.forecast.filter((value) => format(new Date(value.dateText), 'dd-MM-yyyy') === date);
+        const sum = items?.reduce((acc, curr) => acc + curr.temperature, 0) || 0;
+        return (items!.length == 0 ? 0 : sum / items!.length).toFixed(2);
+      })
+      const averageHumidity = datesOfForecast?.map(date => {
+        const items = data?.forecast.filter((value) => format(new Date(value.dateText), 'dd-MM-yyyy') === date);
+        const sum = items?.reduce((acc, curr) => acc + curr.humidity, 0) || 0;
+        return (items!.length == 0 ? 0 : sum / items!.length).toFixed(2);
+      })
+      const averageRain = datesOfForecast?.map(date => {
+        const items = data?.forecast.filter((value) => format(new Date(value.dateText), 'dd-MM-yyyy') === date);
+        const sum = items?.reduce((acc, curr) => acc + curr.rain, 0) || 0;
+        return (items!.length == 0 ? 0 : sum / items!.length).toFixed(2);
+      })
+      console.log(averageRain);
+      autoTable(doc, {
+        head: [["Дата", "Середня температура (°C)", "Середня вологість (%)", "Середні опади (мм)"]],
+        body: datesOfForecast?.map((date, index) => [date, averageTemperature![index], averageHumidity![index], averageRain![index]]) || [],
+        styles: {
+          font: "OpenSans-Regular",
+          fontStyle: "normal",
+          halign: 'center',
+        },
+        headStyles: {
+          font: "OpenSans-Regular",
+          fontStyle: "normal",
+          halign: 'center'
+        },
+        margin: { top: yOffset + 10 },
+        theme: 'grid',
+      });
+    }
+
+    doc.addImage(brand, 'PNG', pageWidth - 60, pageHeight - 30, 40, 15);
+
+    doc.save(`Звіт_${new Date().getFullYear()}_${new Date().getMonth() + 1}_${new Date().getHours()}_${new Date().getMinutes()}_${new Date().getSeconds()}.pdf`);
+    /*doc.text(`Прогноз: ${data?.forecast.length == 0 && "Відсутній"}`, 10, yOffset += 10);
+    if (data!.forecast.length > 0) {
+      data!.forecast.forEach((forecastItem, index) => {
+        
+      })
+    }*/
+
+
+
+
+
+  }
 
   if (loading) {
     return (
@@ -142,18 +239,34 @@ export const FieldDashboardPage = () => {
           </Typography>
         </Breadcrumbs>
 
-        <Button 
-          startIcon={<ArrowBackIcon />} 
-          onClick={() => navigate('/')} 
-          sx={{ 
-            color: '#2E7D32', 
-            textTransform: 'none', 
-            fontWeight: 600,
-            '&:hover': { backgroundColor: 'rgba(46, 125, 50, 0.05)' } 
-          }}
-        >
-          Назад до списку полів
-        </Button>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Button
+            startIcon={<ArrowBackIcon />}
+            onClick={() => navigate('/')}
+            sx={{
+              color: '#2E7D32',
+              textTransform: 'none',
+              fontWeight: 600,
+              '&:hover': { backgroundColor: 'rgba(46, 125, 50, 0.05)' }
+            }}
+          >
+            Назад до списку полів
+          </Button>
+          <Button
+            onClick={() => handleDownloadReport()}
+            sx={{
+              marginLeft: "100",
+              color: 'white',
+              backgroundColor: '#2E7D32',
+              textTransform: 'none',
+              fontWeight: 600,
+              '&:hover': { backgroundColor: 'rgb(40, 106, 43)' }
+            }}
+          >
+            Завантажити звіт (PDF)
+          </Button>
+        </Box>
+
       </Box>
 
       {/* Заголовок та агрокліматична зона */}
@@ -172,40 +285,40 @@ export const FieldDashboardPage = () => {
       <SafetyAdvisoryAlert shellingImpactLevel={data.shellingImpactLevel} crop={data.crop} />
 
       {/* Головна сітка дашборду */}
-      <Box sx={{ 
-        display: 'grid', 
-        gridTemplateColumns: { xs: '1fr', md: '7fr 4fr', lg: '8fr 4fr' }, 
+      <Box sx={{
+        display: 'grid',
+        gridTemplateColumns: { xs: '1fr', md: '7fr 4fr', lg: '8fr 4fr' },
         gap: 3,
         width: '100%'
       }}>
         {/* Ліва частина: погода, фаза росту, графіки */}
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-          <Box sx={{ 
-            display: 'grid', 
-            gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, 
-            gap: 3 
+          <Box sx={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
+            gap: 3
           }}>
-            <WeatherCard 
-              temperature={data.currentTemperature} 
-              humidity={data.currentHumidity} 
-              rain={data.rainAmount} 
-              description={data.weatherDescription} 
+            <WeatherCard
+              temperature={data.currentTemperature}
+              humidity={data.currentHumidity}
+              rain={data.rainAmount}
+              description={data.weatherDescription}
             />
-            <GrowthStageCard 
-              sowingDate={data.sowingDate} 
-              daysSinceSowing={data.daysSinceSowing} 
-              growthStage={data.growthStage} 
+            <GrowthStageCard
+              sowingDate={data.sowingDate}
+              daysSinceSowing={data.daysSinceSowing}
+              growthStage={data.growthStage}
             />
           </Box>
-          
+
           <AnalyticsCharts forecast={data.forecast} />
         </Box>
 
         {/* Права частина: Чекліст догляду (Timeline) */}
         <Box>
-          <RecommendationsTimeline 
-            recommendations={data.recommendations} 
-            onComplete={handleCompleteRecommendation} 
+          <RecommendationsTimeline
+            recommendations={data.recommendations}
+            onComplete={handleCompleteRecommendation}
           />
         </Box>
       </Box>
