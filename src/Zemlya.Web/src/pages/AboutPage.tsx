@@ -58,26 +58,26 @@ export const AboutPage = () => {
                <Grid container spacing={3}>
                   <Grid size={{ xs: 12, sm: 6 }}>
                      <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#1B5E20', mb: 1.5 }}>
-                        Backend (.NET 10 & API)
+                        Backend
                      </Typography>
                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                         <Chip label=".NET 10" color="success" variant="outlined" />
                         <Chip label="Minimal APIs" color="success" variant="outlined" />
                         <Chip label="MediatR" color="success" variant="outlined" />
                         <Chip label="Carter" color="success" variant="outlined" />
-                        <Chip label="EF Core (Npgsql)" color="success" variant="outlined" />
+                        <Chip label="EF Core" color="success" variant="outlined" />
                         <Chip label="PostgreSQL" color="success" variant="outlined" />
                         <Chip label="Vertical Slice Architecture" color="success" variant="outlined" />
                      </Box>
                   </Grid>
                   <Grid size={{ xs: 12, sm: 6 }}>
                      <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#1B5E20', mb: 1.5 }}>
-                        Frontend (React & UI)
+                        Frontend
                      </Typography>
                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                         <Chip label="React 19" color="primary" variant="outlined" />
                         <Chip label="TypeScript" color="primary" variant="outlined" />
-                        <Chip label="Material UI 9" color="primary" variant="outlined" />
+                        <Chip label="Material UI" color="primary" variant="outlined" />
                         <Chip label="Redux Toolkit" color="primary" variant="outlined" />
                         <Chip label="React Leaflet" color="primary" variant="outlined" />
                         <Chip label="Recharts" color="primary" variant="outlined" />
