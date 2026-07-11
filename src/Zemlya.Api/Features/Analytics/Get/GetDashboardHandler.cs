@@ -50,7 +50,7 @@ public sealed record DashboardRecommendationDto(
 public class GetDashboardHandler(
     DatabaseContext context,
     IWeatherService weatherService,
-    ZemlyaEngine engine,
+    IZemlyaEngine engine,
     AgroClimaticZoneResolver zoneResolver,
     CropGrowthStageResolver cropResolver,
     ILogger<GetDashboardHandler> logger) 

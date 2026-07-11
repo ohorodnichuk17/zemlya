@@ -1,6 +1,5 @@
 using MediatR;
 using Zemlya.Api.Abstractions;
-using Zemlya.Api.Features.Recommendations.Services;
 using Zemlya.Api.Infrastructure.Database;
 
 namespace Zemlya.Api.Features.AgroFields.Create;
@@ -19,11 +18,15 @@ public sealed record CreateAgroFieldRequest(
 public sealed class CreateAgroFieldHandler(
     DatabaseContext context,
     IWeatherService weatherService,
-    ZemlyaEngine engine) 
+    IZemlyaEngine engine,
+    ITenantProvider tenantProvider) 
     : IRequestHandler<CreateAgroFieldRequest, Guid>
 {
     public async Task<Guid> Handle(CreateAgroFieldRequest request, CancellationToken cancellationToken)
     {
+        var tenantId = tenantProvider.GetCurrentTenantId()
+            ?? throw new InvalidOperationException("TenantId not found in token. Is the user authenticated?");
+
         var newAgroField = new AgroField
         {
             Id = Guid.NewGuid(),
@@ -37,7 +40,8 @@ public sealed class CreateAgroFieldHandler(
             ShellingImpactLevel = request.ShellingImpactLevel,
             SowingDate = DateTime.SpecifyKind(request.SowingDate, DateTimeKind.Utc),
             CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            UpdatedAt = DateTime.UtcNow,
+            TenantId = tenantId
         };
 
         await context.AgroFields.AddAsync(newAgroField, cancellationToken);

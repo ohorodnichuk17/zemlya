@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using Zemlya.Api.Abstractions;
 using Zemlya.Api.Features.AgroFields;
 using Zemlya.Api.Features.Auth;
 using Zemlya.Api.Features.Recommendations;
-using Zemlya.Api.Infrastructure.Auth;
 
 namespace Zemlya.Api.Infrastructure.Database;
 
@@ -16,7 +16,7 @@ public class DatabaseContext : DbContext
 
     public DatabaseContext(
         DbContextOptions<DatabaseContext> options
-        , TenantProvider tenantProvider) 
+        , ITenantProvider tenantProvider) 
         : base(options)
     {
         _currentTenantId = tenantProvider.GetCurrentTenantId();

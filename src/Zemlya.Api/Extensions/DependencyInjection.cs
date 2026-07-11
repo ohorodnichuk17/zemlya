@@ -53,12 +53,11 @@ public static class DependencyInjection
             services.AddTransient<ReclamationScheduler>();
             services.AddTransient<IrrigationScheduler>();
             services.AddTransient<FertilizationScheduler>();
-            services.AddTransient<ZemlyaEngine>();
+            services.AddScoped<IZemlyaEngine, ZemlyaEngine>();
             services.AddHttpContextAccessor();
-            services.AddScoped<TenantProvider>();
+            services.AddScoped<ITenantProvider, TenantProvider>();
         
             return services;
         }
     }
-
 }
