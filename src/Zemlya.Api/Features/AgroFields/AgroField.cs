@@ -1,3 +1,4 @@
+using Zemlya.Api.Features.Auth;
 using Zemlya.Api.Features.Recommendations;
 
 namespace Zemlya.Api.Features.AgroFields;
@@ -5,7 +6,7 @@ namespace Zemlya.Api.Features.AgroFields;
 public sealed class AgroField
 {
     public Guid Id { get; set; }
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
     public CropType CropType { get; set; }
     public SoilType SoilType { get; set; }
     public decimal SizeHectares { get; set; }
@@ -16,6 +17,10 @@ public sealed class AgroField
     public DateTime SowingDate { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+    public bool IsDeleted { get; set; }
     
     public ICollection<Recommendation> Recommendations { get; set; } = [];
+
+    public Guid TenantId { get; set; }
+    public Tenant Tenant { get; set; } = null!;
 }
