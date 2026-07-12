@@ -1,3 +1,4 @@
+using Zemlya.Api.Abstractions;
 using Zemlya.Api.Features.AgroFields;
 using Zemlya.Api.Features.Recommendations.Models;
 using Zemlya.Api.Infrastructure.Weather;
@@ -11,7 +12,7 @@ public class ZemlyaEngine(
     ReclamationScheduler reclamationScheduler,
     IrrigationScheduler irrigationScheduler,
     FertilizationScheduler fertilizationScheduler,
-    ILogger<ZemlyaEngine> logger)
+    ILogger<ZemlyaEngine> logger) : IZemlyaEngine
 {
     public List<Recommendation> GenerateSchedule(AgroField field, List<ForecastItem> forecast)
     {
