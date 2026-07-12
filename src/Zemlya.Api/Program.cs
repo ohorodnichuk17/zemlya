@@ -1,5 +1,6 @@
 using Carter;
 using Zemlya.Api.Extensions;
+using Zemlya.Api.Middlewares;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +17,9 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 app.UseCors("CustomCORS");
+app.UseMiddleware<GlobalErrorHandlerMiddleware>();
 app.MapCarter();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
