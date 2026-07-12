@@ -16,6 +16,10 @@ public sealed class AgroField
     public DateTime SowingDate { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
-    
+
+    public bool IsArchived { get; set; } = false;
+    public bool IsDeleted { get; set; } = false;
+
+
     public ICollection<Recommendation> Recommendations { get; set; } = [];
 }

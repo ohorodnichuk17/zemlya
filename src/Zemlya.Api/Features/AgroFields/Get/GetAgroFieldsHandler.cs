@@ -38,9 +38,11 @@ public class GetAgroFieldsHandler(DatabaseContext context) : IRequestHandler<Get
 {
     public async Task<PaginationAgroFieldsResponse> Handle(GetAgroFieldsRequest request, CancellationToken cancellationToken)
     {
-        var totalCount = await context.AgroFields.CountAsync(cancellationToken);
+        var totalCount = await context.AgroFields.AsNoTracking().Where(f => !f.IsArchived).CountAsync(cancellationToken);
 
         var fields = await context.AgroFields
+            .AsNoTracking()
+            .Where(f => !f.IsArchived)
             .OrderBy(af => af.CreatedAt)
             .Skip(request.Page * request.SizeOfPage)
             .Take(request.SizeOfPage)

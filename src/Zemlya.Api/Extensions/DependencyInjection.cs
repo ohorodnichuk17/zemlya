@@ -4,6 +4,7 @@ using Zemlya.Api.Abstractions;
 using Zemlya.Api.Features.Recommendations.Services;
 using Zemlya.Api.Infrastructure.Database;
 using Zemlya.Api.Infrastructure.Weather;
+using Zemlya.Api.Middlewares;
 
 namespace Zemlya.Api.Extensions;
 
@@ -16,6 +17,8 @@ public static class DependencyInjection
             services.AddCors();
             services.AddMediatR(config => config.RegisterServicesFromAssembly(typeof(Program).Assembly));
             services.AddCarter();
+            services.AddControllers().AddNewtonsoftJson();
+            services.AddTransient<GlobalErrorHandlerMiddleware>();
             return services;
         }
 

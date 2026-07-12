@@ -25,7 +25,7 @@ public class DatabaseContext : DbContext
 
         modelBuilder.Entity<AgroField>(entity =>
         {
-            entity.ToTable("AgroFields");
+            entity.ToTable("AgroFields").HasQueryFilter(f => !f.IsDeleted);
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Name).HasMaxLength(100).IsRequired();
             entity.Property(e => e.CropType).HasConversion<string>();
@@ -36,6 +36,7 @@ public class DatabaseContext : DbContext
             entity.Property(e => e.Oblast).HasMaxLength(100).IsRequired();
             entity.Property(e => e.ShellingImpactLevel).HasConversion<string>();
             entity.Property(e => e.SowingDate).IsRequired();
+
         });
         
         modelBuilder.Entity<Recommendation>(entity =>
