@@ -56,15 +56,23 @@ public sealed class JwtTokenService(IOptions<JwtOptions> jwtOptions)
         };
 
         var handler = new JwtSecurityTokenHandler();
-        var principal = handler.ValidateToken(token, validationParams, out SecurityToken validatedToken);
+
+        try
+        {
+            var principal = handler.ValidateToken(token, validationParams, out SecurityToken validatedToken);
         
-        if (validatedToken is not JwtSecurityToken jwtToken ||
-            !jwtToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, 
-                StringComparison.InvariantCultureIgnoreCase))
+            if (validatedToken is not JwtSecurityToken jwtToken ||
+                !jwtToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, 
+                    StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+        
+            return principal;
+        }
+        catch (SecurityTokenValidationException)
         {
             return null;
         }
-        
-        return principal;
     }
 }
