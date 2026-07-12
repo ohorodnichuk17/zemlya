@@ -2,6 +2,7 @@ using Carter;
 using Microsoft.EntityFrameworkCore;
 using Zemlya.Api.Abstractions;
 using Zemlya.Api.Features.Recommendations.Services;
+using Zemlya.Api.Infrastructure.Auth;
 using Zemlya.Api.Infrastructure.Database;
 using Zemlya.Api.Infrastructure.Weather;
 
@@ -52,10 +53,11 @@ public static class DependencyInjection
             services.AddTransient<ReclamationScheduler>();
             services.AddTransient<IrrigationScheduler>();
             services.AddTransient<FertilizationScheduler>();
-            services.AddTransient<ZemlyaEngine>();
+            services.AddScoped<IZemlyaEngine, ZemlyaEngine>();
+            services.AddHttpContextAccessor();
+            services.AddScoped<ITenantProvider, TenantProvider>();
         
             return services;
         }
     }
-
 }
