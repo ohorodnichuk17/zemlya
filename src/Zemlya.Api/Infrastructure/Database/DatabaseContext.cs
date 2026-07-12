@@ -97,8 +97,8 @@ public class DatabaseContext : DbContext
             entity.ToTable("RefreshTokens");
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Token).HasMaxLength(500).IsRequired();
+            entity.HasIndex(e => e.Token).IsUnique();
             entity.Property(e => e.ExpiresAt).IsRequired();
-            
             entity.HasOne(e => e.User)
                 .WithMany(u => u.RefreshTokens)
                 .HasForeignKey(e => e.UserId)
