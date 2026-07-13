@@ -26,9 +26,9 @@ public static class DependencyInjection
             {
                 options.AddPolicy("CustomCORS", builder =>
                 {
-                    builder.AllowAnyOrigin()
-                           .AllowAnyMethod()
-                           .AllowAnyHeader();
+                    builder.AllowAnyOrigin() 
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
                 });
             });
             return services;
@@ -44,8 +44,10 @@ public static class DependencyInjection
             return services;
         }
 
-        public IServiceCollection AddInfrastructureServices()
+        public IServiceCollection AddInfrastructureServices(IConfiguration configuration)
         {
+            services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
+            
             services.AddHttpClient<IWeatherService, MockWeatherService>();
             services.AddTransient<AgroClimaticZoneResolver>();
             services.AddTransient<CropGrowthStageResolver>();
@@ -53,6 +55,7 @@ public static class DependencyInjection
             services.AddTransient<ReclamationScheduler>();
             services.AddTransient<IrrigationScheduler>();
             services.AddTransient<FertilizationScheduler>();
+            services.AddTransient<JwtTokenService>();
             services.AddScoped<IZemlyaEngine, ZemlyaEngine>();
             services.AddHttpContextAccessor();
             services.AddScoped<ITenantProvider, TenantProvider>();
