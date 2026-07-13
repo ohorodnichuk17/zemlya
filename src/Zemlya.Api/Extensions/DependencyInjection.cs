@@ -13,7 +13,6 @@ using Zemlya.Api.Infrastructure.Database;
 using Zemlya.Api.Infrastructure.Weather;
 using Zemlya.Api.Middlewares;
 
-
 namespace Zemlya.Api.Extensions;
 
 public static class DependencyInjection
@@ -27,7 +26,7 @@ public static class DependencyInjection
             services.AddMediatR(config =>
             {
                 config.RegisterServicesFromAssembly(typeof(Program).Assembly);
-                config.AddOpenBehavior(typeof(ValidationBehavior<,>));  // ← add this
+                config.AddOpenBehavior(typeof(ValidationBehavior<,>));
             });
             services.AddCarter();
             services.AddControllers().AddNewtonsoftJson();
