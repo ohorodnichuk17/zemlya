@@ -136,12 +136,6 @@ export const AboutPage = () => {
          </Card>
 
          <TeamContactsCard />
-
-         <Box sx={{ textAlign: 'center', mt: 2 }}>
-            <Typography variant="caption" color="text.secondary">
-               Zemlya • 2026
-            </Typography>
-         </Box>
       </Container>
    );
 };
