@@ -55,7 +55,7 @@ public static class DependencyInjection
         public IServiceCollection AddInfrastructureServices(IConfiguration configuration)
         {
             services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
-            
+
             services.AddHttpClient<IWeatherService, MockWeatherService>();
             services.AddTransient<AgroClimaticZoneResolver>();
             services.AddTransient<CropGrowthStageResolver>();
