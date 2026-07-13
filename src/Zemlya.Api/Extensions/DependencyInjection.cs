@@ -1,11 +1,16 @@
 using Carter;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using Zemlya.Api.Abstractions;
 using Zemlya.Api.Features.Recommendations.Services;
 using Zemlya.Api.Infrastructure.Auth;
 using Zemlya.Api.Infrastructure.Database;
 using Zemlya.Api.Infrastructure.Weather;
 using Zemlya.Api.Middlewares;
+
 
 namespace Zemlya.Api.Extensions;
 
@@ -65,5 +70,33 @@ public static class DependencyInjection
         
             return services;
         }
+        public IServiceCollection AddJwtBearer(IConfiguration configuration)
+        {
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = configuration["Jwt:Issuer"],
+                    ValidAudience = configuration["Jwt:Audience"],
+                    ClockSkew = TimeSpan.Zero,
+                    IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(configuration["Jwt:SigningKey"]!)),
+
+                };
+            });
+            services.AddAuthorization(conf =>
+            {
+                conf.DefaultPolicy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser()
+                    .Build();
+            });
+            return services;
+        }
+        
+
     }
 }
