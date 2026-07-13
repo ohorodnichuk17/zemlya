@@ -38,7 +38,7 @@ public class DatabaseContext : DbContext
 
         modelBuilder.Entity<AgroField>(entity =>
         {
-            entity.ToTable("AgroFields");
+            entity.ToTable("AgroFields").HasQueryFilter(f => !f.IsDeleted);
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Name).HasMaxLength(100).IsRequired();
             entity.Property(e => e.CropType).HasConversion<string>();
@@ -48,8 +48,7 @@ public class DatabaseContext : DbContext
             entity.Property(e => e.Longitude).HasPrecision(9, 6);
             entity.Property(e => e.Oblast).HasMaxLength(100).IsRequired();
             entity.Property(e => e.ShellingImpactLevel).HasConversion<string>();
-            entity.Property(e => e.SowingDate).IsRequired();
-            
+            entity.Property(e => e.SowingDate).IsRequired();      
             entity.HasOne(e => e.Tenant)
                 .WithMany(t => t.Fields)
                 .HasForeignKey(e => e.TenantId);
@@ -61,7 +60,7 @@ public class DatabaseContext : DbContext
         
         modelBuilder.Entity<Recommendation>(entity =>
         {
-            entity.ToTable("Recommendations");
+            entity.ToTable("Recommendations").HasQueryFilter(r => !r.IsDeleted);
             entity.HasKey(e => e.Id);
             entity.Property(e => e.ActionType).HasConversion<string>();
             entity.Property(e => e.Amount).HasPrecision(10, 2);

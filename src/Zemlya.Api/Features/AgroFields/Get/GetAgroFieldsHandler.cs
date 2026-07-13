@@ -4,7 +4,7 @@ using Zemlya.Api.Infrastructure.Database;
 
 namespace Zemlya.Api.Features.AgroFields.Get;
 
-public sealed record GetAgroFieldsRequest(int Page = 0, int SizeOfPage = 10) : IRequest<PaginationAgroFieldsResponse>;
+public sealed record GetAgroFieldsRequest(bool IsArchived,int Page = 0, int SizeOfPage = 10) : IRequest<PaginationAgroFieldsResponse>;
 
 public sealed record GetAgroFieldsResponse(
     Guid Id,
@@ -38,9 +38,11 @@ public class GetAgroFieldsHandler(DatabaseContext context) : IRequestHandler<Get
 {
     public async Task<PaginationAgroFieldsResponse> Handle(GetAgroFieldsRequest request, CancellationToken cancellationToken)
     {
-        var totalCount = await context.AgroFields.CountAsync(cancellationToken);
+        var totalCount = await context.AgroFields.AsNoTracking().Where(f => f.IsArchived == request.IsArchived).CountAsync(cancellationToken);
 
         var fields = await context.AgroFields
+            .AsNoTracking()
+            .Where(f => f.IsArchived == request.IsArchived)
             .OrderBy(af => af.CreatedAt)
             .Skip(request.Page * request.SizeOfPage)
             .Take(request.SizeOfPage)

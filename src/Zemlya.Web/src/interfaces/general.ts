@@ -3,6 +3,8 @@ export interface IValidationError {
     message: string
 }
 export interface IPagination{
+    isArchived: boolean,
     page: number,
-    sizeOfPage: number
+    sizeOfPage: number,
+    
 } 
