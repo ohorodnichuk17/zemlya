@@ -6,7 +6,7 @@ namespace Zemlya.Api.Features.Recommendations.Complete;
 
 public sealed record CompleteRecommendationCommand(Guid Id) : IRequest<bool>;
 
-public class CompleteRecommendationHandler(DatabaseContext context) : IRequestHandler<CompleteRecommendationCommand, bool>
+public sealed class CompleteRecommendationHandler(DatabaseContext context) : IRequestHandler<CompleteRecommendationCommand, bool>
 {
     public async Task<bool> Handle(CompleteRecommendationCommand request, CancellationToken cancellationToken)
     {
