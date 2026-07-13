@@ -48,11 +48,7 @@ public class DatabaseContext : DbContext
             entity.Property(e => e.Longitude).HasPrecision(9, 6);
             entity.Property(e => e.Oblast).HasMaxLength(100).IsRequired();
             entity.Property(e => e.ShellingImpactLevel).HasConversion<string>();
-            entity.Property(e => e.SowingDate).IsRequired();
-<<<<<<< HEAD
-
-=======
-            
+            entity.Property(e => e.SowingDate).IsRequired();      
             entity.HasOne(e => e.Tenant)
                 .WithMany(t => t.Fields)
                 .HasForeignKey(e => e.TenantId);
@@ -60,12 +56,11 @@ public class DatabaseContext : DbContext
             entity.HasQueryFilter(f =>
                 !f.IsDeleted &&
                 (_currentTenantId == null || f.TenantId == _currentTenantId));
->>>>>>> main
         });
         
         modelBuilder.Entity<Recommendation>(entity =>
         {
-            entity.ToTable("Recommendations");
+            entity.ToTable("Recommendations").HasQueryFilter(r => !r.IsDeleted);
             entity.HasKey(e => e.Id);
             entity.Property(e => e.ActionType).HasConversion<string>();
             entity.Property(e => e.Amount).HasPrecision(10, 2);

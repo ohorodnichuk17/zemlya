@@ -9,7 +9,7 @@ namespace Zemlya.Api.Features.AgroFields.Patch;
 
 public sealed record PatchAgroFieldRequest(Guid Id, JsonPatchDocument<AgroField> Patch) : IRequest<Guid>;
 public sealed class PatchAgroFieldHandler(DatabaseContext context,
-    ZemlyaEngine engine, 
+    IZemlyaEngine engine, 
     IWeatherService weatherService,
     ILogger<PatchAgroFieldHandler> logger) : IRequestHandler<PatchAgroFieldRequest, Guid>
 {

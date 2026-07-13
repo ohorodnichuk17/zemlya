@@ -8,7 +8,7 @@ import { AddFieldModal } from "../components/AddFieldModal";
 import AddIcon from '@mui/icons-material/Add';
 
 export const FieldsPage = () => {
-   const [pagination, setPagination] = useState<IPagination>({ page: 0, sizeOfPage: 6 });
+   const [pagination, setPagination] = useState<IPagination>({ isArchived: false,page: 0, sizeOfPage: 6 });
    const [isModalOpen, setIsModalOpen] = useState(false);
 
    const dispatch = useAppDispatch();

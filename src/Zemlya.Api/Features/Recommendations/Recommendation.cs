@@ -13,4 +13,5 @@ public class Recommendation
     public decimal Amount { get; set; } // (Liters/Kg per Hectare)
     public bool IsCompleted { get; set; }
     public string? Description { get; set; }
+    public bool IsDeleted { get; set; } = false;
 }
