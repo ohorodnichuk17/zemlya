@@ -1,10 +1,12 @@
 using Carter;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Zemlya.Api.Abstractions;
+using Zemlya.Api.Behaviors;
 using Zemlya.Api.Features.Recommendations.Services;
 using Zemlya.Api.Infrastructure.Auth;
 using Zemlya.Api.Infrastructure.Database;
@@ -21,7 +23,12 @@ public static class DependencyInjection
         public IServiceCollection AddPresentation()
         {
             services.AddCors();
-            services.AddMediatR(config => config.RegisterServicesFromAssembly(typeof(Program).Assembly));
+            services.AddValidatorsFromAssembly(typeof(Program).Assembly);
+            services.AddMediatR(config =>
+            {
+                config.RegisterServicesFromAssembly(typeof(Program).Assembly);
+                config.AddOpenBehavior(typeof(ValidationBehavior<,>));  // ← add this
+            });
             services.AddCarter();
             services.AddControllers().AddNewtonsoftJson();
             services.AddTransient<ExceptionHandlingMiddleware>();
@@ -70,6 +77,7 @@ public static class DependencyInjection
         
             return services;
         }
+        
         public IServiceCollection AddJwtBearer(IConfiguration configuration)
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -96,7 +104,5 @@ public static class DependencyInjection
             });
             return services;
         }
-        
-
     }
 }

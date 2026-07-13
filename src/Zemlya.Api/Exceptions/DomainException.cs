@@ -11,3 +11,6 @@ public sealed class NotFoundException(string message)
 
 public sealed class UnauthorizedException(string message) 
     : DomainException(message);
+
+public sealed class ValidationException(IEnumerable<string> errors) 
+    : DomainException(string.Join("; ", errors));
