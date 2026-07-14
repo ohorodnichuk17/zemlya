@@ -1,3 +1,4 @@
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using Zemlya.Api.Exceptions;
 
@@ -28,6 +29,7 @@ public class ExceptionHandlingMiddleware(
             ConflictException      => StatusCodes.Status409Conflict,
             NotFoundException      => StatusCodes.Status404NotFound,
             UnauthorizedException  => StatusCodes.Status401Unauthorized,
+            ValidationException => StatusCodes.Status400BadRequest,
             _                      => StatusCodes.Status500InternalServerError
         };
 
@@ -37,7 +39,8 @@ public class ExceptionHandlingMiddleware(
 
         var json = JsonSerializer.Serialize(response, new JsonSerializerOptions
         {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
         });
 
         await context.Response.WriteAsync(json);
