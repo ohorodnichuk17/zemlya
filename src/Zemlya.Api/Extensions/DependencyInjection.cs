@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
 using Zemlya.Api.Abstractions;
 using Zemlya.Api.Behaviors;
 using Zemlya.Api.Features.Recommendations.Services;

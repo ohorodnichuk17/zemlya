@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Zemlya.Api.Features.Auth.Register;
 
-public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
+public sealed class RegisterRequestValidator : AbstractValidator<RegisterRequest>
 {
     public RegisterRequestValidator()
     {
