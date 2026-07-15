@@ -11,11 +11,24 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import EcoIcon from '@mui/icons-material/Spa';
 import { Outlet, useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { logoutAsync } from '../redux/actions/authActions';
 
 const pages = [['Поля', "/"], ['Про проєкт', "/about"]];
 
+const getRoleText = (role: string) => {
+   switch (role) {
+      case 'Owner': return 'Власник';
+      case 'Agronomist': return 'Агроном';
+      case 'Auditor': return 'Аудитор';
+      default: return role;
+   }
+};
+
 function NavigationLayout() {
    const navigate = useNavigate();
+   const dispatch = useAppDispatch();
+   const user = useAppSelector((state) => state.authReducer.user);
    const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
 
    const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -26,15 +39,14 @@ function NavigationLayout() {
       setAnchorElNav(null);
    };
 
+   const handleLogout = () => {
+      dispatch(logoutAsync());
+      navigate('/login');
+   };
+
    return (
       <Container maxWidth={false}
-         disableGutters sx={{ display: 'flex', 
-         flexDirection: 'column', 
-         height: '100vh', 
-         width: '100%', 
-         backgroundColor: '#F1F8E9', 
-         minWidth: '400px',
-         overflowY:"auto", }}>
+         disableGutters sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', width: '100%', backgroundColor: '#F1F8E9', minWidth: '400px' }}>
          <AppBar position="static" sx={{ backgroundColor: '#2E7D32', borderBottom: '3px solid #FBC02D', zIndex: 5 }}>
             <Container>
                <Toolbar disableGutters>
@@ -122,6 +134,33 @@ function NavigationLayout() {
                      ))}
                   </Box>
 
+                  {user && (
+                     <Box sx={{ display: 'flex', alignItems: 'center', mr: 2, gap: 1.5 }}>
+                        <Typography variant="body2" sx={{ color: 'white', display: { xs: 'none', sm: 'block' }, fontWeight: 500 }}>
+                           {user.email} ({getRoleText(user.role)})
+                        </Typography>
+                        <Button
+                           onClick={handleLogout}
+                           sx={{
+                              color: 'white',
+                              borderColor: 'rgba(255,255,255,0.4)',
+                              textTransform: 'none',
+                              fontWeight: 600,
+                              px: 2,
+                              borderRadius: '6px',
+                              '&:hover': {
+                                 borderColor: 'white',
+                                 backgroundColor: 'rgba(255,255,255,0.1)'
+                              }
+                           }}
+                           variant="outlined"
+                           size="small"
+                        >
+                           Вийти
+                        </Button>
+                     </Box>
+                  )}
+
                   <Box sx={{ display: 'flex', flexDirection: 'column', width: '24px', height: '16px', borderRadius: '2px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.2)' }}>
                      <Box sx={{ flex: 1, backgroundColor: '#0057B7' }} />
                      <Box sx={{ flex: 1, backgroundColor: '#FFD700' }} />
@@ -130,11 +169,6 @@ function NavigationLayout() {
             </Container>
          </AppBar>
          <Outlet />
-         <Box sx={{ textAlign: 'center', mt: 2 }}>
-            <Typography variant="caption" color="text.secondary">
-               Zemlya • 2026
-            </Typography>
-         </Box>
       </Container>
    );
 }

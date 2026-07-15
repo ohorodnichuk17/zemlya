@@ -10,8 +10,9 @@ import EditIcon from '@mui/icons-material/Edit';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import UnarchiveIcon from '@mui/icons-material/Unarchive';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useEffect } from "react"
+
 import { crops, soils } from "../types/dataTypes"
+import { useAppSelector } from "../redux/hooks";
 
 export const CardComponent = (props: { 
    cardInfo: IFieldsResponse,
@@ -20,6 +21,9 @@ export const CardComponent = (props: {
    editHandler : () => void 
 }) => {
    const navigate = useNavigate();
+   const user = useAppSelector(state => state.authReducer.user);
+   const isAuditor = user?.role === 'Auditor';
+
 
    const getCropImage = (crop: string) => {
       switch (crop.toLowerCase()) {
@@ -68,23 +72,26 @@ export const CardComponent = (props: {
          </CardContent>
          <CardActions sx={{ padding: '12px 16px 18px', borderTop: '1px solid rgba(0,0,0,0.04)' }}>
             <Box sx={{ display: "flex", flexDirection: "column", width: "100%", rowGap: "5px" }}>
-               <Box sx={{ display: "flex" }}>
-                  <Tooltip title="Редагувати" placement="top">
-                     <IconButton onClick={() => {props.editHandler()}} color="primary" >
-                        <EditIcon />
-                     </IconButton>
-                  </Tooltip>
-                  <Tooltip title={props.cardInfo.isArchived == false ? "Архівувати" : "Розархівувати"} placement="top">
-                     <IconButton onClick={() => props.archiveUnarchiveHandler()} color="primary" >
-                        {props.cardInfo.isArchived == false ? <ArchiveIcon /> : <UnarchiveIcon/>}
-                     </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Видалити" placement="top">
-                     <IconButton onClick={() => props.removeHandler()} color="primary" >
-                        <DeleteIcon />
-                     </IconButton>
-                  </Tooltip>
-               </Box>
+               {!isAuditor && (
+                  <Box sx={{ display: "flex" }}>
+                     <Tooltip title="Редагувати" placement="top">
+                        <IconButton onClick={() => {props.editHandler()}} color="primary" >
+                           <EditIcon />
+                        </IconButton>
+                     </Tooltip>
+                     <Tooltip title={props.cardInfo.isArchived == false ? "Архівувати" : "Розархівувати"} placement="top">
+                        <IconButton onClick={() => props.archiveUnarchiveHandler()} color="primary" >
+                           {props.cardInfo.isArchived == false ? <ArchiveIcon /> : <UnarchiveIcon/>}
+                        </IconButton>
+                     </Tooltip>
+                     <Tooltip title="Видалити" placement="top">
+                        <IconButton onClick={() => props.removeHandler()} color="primary" >
+                           <DeleteIcon />
+                        </IconButton>
+                     </Tooltip>
+                  </Box>
+               )}
+
                <Button
                   size="small"
                   variant="contained"
