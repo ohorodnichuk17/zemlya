@@ -168,8 +168,29 @@ function NavigationLayout() {
                </Toolbar>
             </Container>
          </AppBar>
-         <Outlet />
+         <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+            <Outlet />
+         </Box>
+
+         <Box
+            component="footer"
+            sx={{
+               mt: 'auto',
+               py: 2,
+               px: 2,
+               backgroundColor: '#2E7D32',
+               color: '#FFFFFF',
+               borderTop: '3px solid #FBC02D',
+               textAlign: 'center'
+            }}
+         >
+            <Typography variant="body2" sx={{ fontWeight: 600 }}>
+               Zemlya • 2026 • Future in Action hackaton
+            </Typography>
+         </Box>
       </Container>
    );
 }
 export default NavigationLayout;
+
+
