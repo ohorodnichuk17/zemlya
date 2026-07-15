@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Zemlya.Api.Exceptions;
 using Zemlya.Api.Infrastructure.Database;
 
 namespace Zemlya.Api.Features.Recommendations.Complete;
@@ -15,7 +16,7 @@ public sealed class CompleteRecommendationHandler(DatabaseContext context) : IRe
 
         if (recommendation == null)
         {
-            return false;
+            throw new NotFoundException("Recommendation not found");
         }
 
         recommendation.IsCompleted = true;
