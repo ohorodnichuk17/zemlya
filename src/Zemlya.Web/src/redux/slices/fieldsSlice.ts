@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { IFieldsInitialState } from "../../interfaces/fields/fields"
-import { getFieldsAsync} from "../actions/fieldsActions";
+import { archiveFieldAsync, editFieldAsync, getFieldsAsync, removeFieldAsync, unarchiveFieldAsync} from "../actions/fieldsActions";
 import type { IValidationError } from "../../interfaces/general";
 
 const initialState : IFieldsInitialState = {
@@ -16,6 +16,26 @@ export const fieldsSlice = createSlice({
         })
         .addCase(getFieldsAsync.rejected, (state, action) => {
             state.paginationFieldsResponse = null;
+            ErrorHandler(action.payload ?? {statusCode: action.error.code ?? 500, message: action.error.message ?? "Unknown error"} as IValidationError);
+        })
+        .addCase(archiveFieldAsync.fulfilled, () => {
+        })
+        .addCase(archiveFieldAsync.rejected, (_,action) => {
+            ErrorHandler(action.payload ?? {statusCode: action.error.code ?? 500, message: action.error.message ?? "Unknown error"} as IValidationError);
+        })
+        .addCase(unarchiveFieldAsync.fulfilled, () => {
+        })
+        .addCase(unarchiveFieldAsync.rejected, (_, action) => {
+            ErrorHandler(action.payload ?? {statusCode: action.error.code ?? 500, message: action.error.message ?? "Unknown error"} as IValidationError);
+        })
+        .addCase(removeFieldAsync.fulfilled, () => {
+        })
+        .addCase(removeFieldAsync.rejected, (_, action) => {
+            ErrorHandler(action.payload ?? {statusCode: action.error.code ?? 500, message: action.error.message ?? "Unknown error"} as IValidationError);
+        })
+        .addCase(editFieldAsync.fulfilled, () => {
+        })
+        .addCase(editFieldAsync.rejected, (_, action) => {
             ErrorHandler(action.payload ?? {statusCode: action.error.code ?? 500, message: action.error.message ?? "Unknown error"} as IValidationError);
         });
     }
