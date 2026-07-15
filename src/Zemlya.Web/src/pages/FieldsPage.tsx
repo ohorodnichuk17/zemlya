@@ -21,6 +21,8 @@ export const FieldsPage = () => {
 
    const dispatch = useAppDispatch();
    const paginationFieldsResponse = useAppSelector(state => state.fieldsReducer.paginationFieldsResponse);
+   const user = useAppSelector(state => state.authReducer.user);
+   const isAuditor = user?.role === 'Auditor';
 
    const refreshFields = () => {
       dispatch(getFieldsAsync(pagination));
@@ -69,24 +71,27 @@ export const FieldsPage = () => {
                <MenuItem value={1}>Архівовані</MenuItem>
             </TextField>
 
-            <Button
-               sx={{
-                  height: '42px',
-                  backgroundColor: '#2E7D32',
-                  '&:hover': { backgroundColor: '#1B5E20' },
-                  textTransform: 'none',
-                  fontWeight: 600,
-                  borderRadius: '8px'
-               }}
-               variant="contained"
-               startIcon={<AddIcon />}
-               onClick={() => {
-                  setModalMode("create");
-                  setIsModalOpen(true)
-               }}
-            >
-               Додати поле
-            </Button>
+            {!isAuditor && (
+               <Button
+                  sx={{
+                     height: '42px',
+                     backgroundColor: '#2E7D32',
+                     '&:hover': { backgroundColor: '#1B5E20' },
+                     textTransform: 'none',
+                     fontWeight: 600,
+                     borderRadius: '8px'
+                  }}
+                  variant="contained"
+                  startIcon={<AddIcon />}
+                  onClick={() => {
+                     setModalMode("create");
+                     setIsModalOpen(true)
+                  }}
+               >
+                  Додати поле
+               </Button>
+            )}
+
          </Box>
 
          <Box
