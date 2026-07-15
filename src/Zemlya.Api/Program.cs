@@ -14,6 +14,9 @@ builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddReverseProxy()
+    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+
 var app = builder.Build();
 
 app.UseCors("CustomCORS");
@@ -32,5 +35,18 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapReverseProxy(proxyPipeline =>
+{
+    proxyPipeline.Use((context, next) =>
+    {
+        context.Response.OnStarting(() =>
+        {
+            context.Response.Headers.Remove("X-Frame-Options");
+            return Task.CompletedTask;
+        });
+        return next();
+    });
+});
 
 app.Run();

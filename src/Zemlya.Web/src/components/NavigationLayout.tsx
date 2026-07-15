@@ -14,7 +14,8 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { logoutAsync } from '../redux/actions/authActions';
 
-const pages = [['Поля', "/"], ['Про проєкт', "/about"]];
+const pages = [['Поля', "/"], ['Карта', "/map"], ['Про проєкт', "/about"]];
+
 
 const getRoleText = (role: string) => {
    switch (role) {
