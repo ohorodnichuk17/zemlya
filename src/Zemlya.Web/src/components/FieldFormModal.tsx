@@ -1,3 +1,4 @@
+import type { IFieldEdit, IPatchOperation } from "../interfaces/fields/fields";
 import { useEffect, useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -12,17 +13,16 @@ import { Icon, type LatLngTuple } from 'leaflet';
 import { IconButton } from '@mui/material';
 import 'leaflet/dist/leaflet.css';
 import point from '../assets/images/point.png';
-import { createFieldAsync, getOblastAsync } from '../redux/actions/fieldsActions';
+import { createFieldAsync, editFieldAsync, getOblastAsync } from '../redux/actions/fieldsActions';
 import { useAppDispatch } from '../redux/hooks';
 
-
-
-interface AddFieldModalProps {
+interface FieldFormModalProps {
   open: boolean;
   onClose: () => void;
   onSubmitSuccess: () => void;
+  mode: "create" | "edit";
+  field?: IFieldEdit
 }
-
 function ClickHandler({ onClick }: { onClick: (lat: number, lng: number) => void }) {
   useMapEvents({
     click(e) {
@@ -30,6 +30,82 @@ function ClickHandler({ onClick }: { onClick: (lat: number, lng: number) => void
     },
   });
   return null;
+}
+
+function CreatePatchBody(newData: IFieldEdit, oldData: IFieldEdit) {
+  let patchOpearations: IPatchOperation[] = [];
+
+  if (newData.name !== oldData.name) {
+    patchOpearations = [...patchOpearations, {
+      op: "replace",
+      path: "/name",
+      value: newData.name
+    }]
+  }
+
+  if (newData.cropType !== oldData.cropType) {
+    patchOpearations = [...patchOpearations, {
+      op: "replace",
+      path: "/cropType",
+      value: newData.cropType
+    }]
+  }
+
+  if (newData.soilType !== oldData.soilType) {
+    patchOpearations = [...patchOpearations, {
+      op: "replace",
+      path: "/soilType",
+      value: newData.soilType
+    }]
+  }
+
+  if (newData.sizeHectares !== oldData.sizeHectares) {
+    patchOpearations = [...patchOpearations, {
+      op: "replace",
+      path: "/sizeHectares",
+      value: newData.sizeHectares.toString()
+    }]
+  }
+
+  if (newData.latitude !== oldData.latitude) {
+    patchOpearations = [...patchOpearations, {
+      op: "replace",
+      path: "/latitude",
+      value: newData.latitude.toString()
+    }]
+  }
+
+  if (newData.longitude !== oldData.longitude) {
+    patchOpearations = [...patchOpearations, {
+      op: "replace",
+      path: "/longitude",
+      value: newData.longitude.toString()
+    }]
+  }
+
+  if (newData.oblast !== oldData.oblast) {
+    patchOpearations = [...patchOpearations, {
+      op: "replace",
+      path: "/longitude",
+      value: newData.oblast
+    }]
+  }
+
+  if (newData.shellingImpactLevel !== oldData.shellingImpactLevel) {
+    patchOpearations = [...patchOpearations, {
+      op: "replace",
+      path: "/shellingImpactLevel",
+      value: newData.shellingImpactLevel
+    }]
+  }
+  if (newData.sowingDate !== oldData.sowingDate) {
+    patchOpearations = [...patchOpearations, {
+      op: "replace",
+      path: "/sowingDate",
+      value: new Date(newData.sowingDate).toISOString()
+    }]
+  }
+  return patchOpearations;
 }
 
 const OBLASTS_COORDINATES: Record<string, { lat: number; lng: number }> = {
@@ -59,10 +135,11 @@ const OBLASTS_COORDINATES: Record<string, { lat: number; lng: number }> = {
   "Кіровоградська": { lat: 48.5079, lng: 32.2623 }
 };
 
-export const AddFieldModal = ({ open, onClose, onSubmitSuccess }: AddFieldModalProps) => {
+
+export const FieldFormModal = (props: FieldFormModalProps) => {
   const [name, setName] = useState('');
-  const [cropType, setCropType] = useState(1); // Wheat
-  const [soilType, setSoilType] = useState(1); // Chernozem
+  const [cropType, setCropType] = useState(0); // Wheat
+  const [soilType, setSoilType] = useState(0); // Chernozem
   const [size, setSize] = useState('10');
   const [oblast, setOblast] = useState('Київська');
   const [coords, setCoords] = useState<LatLngTuple>([50.4501, 30.5234]); // Default to Ukraine center
@@ -74,10 +151,42 @@ export const AddFieldModal = ({ open, onClose, onSubmitSuccess }: AddFieldModalP
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
 
-
-  useEffect(() => {
+  const clearForms = () => {
+    setName("");
+    setCropType(0);
+    setSoilType(0);
+    setSize('10');
+    setOblast('Київська');
+    setCoords([50.4501, 30.5234]);
+    setShellingLevel(0);
     setIsMapVisible(false);
-  }, [open]);
+    setSowingDate(
+      new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+    );
+  }
+  useEffect(() => {
+    clearForms();
+    if (props.mode == "edit" && props.field != undefined) {
+      setName(props.field.name);
+      setCropType(Number(props.field.cropType));
+      setSoilType(Number(props.field.soilType));
+      setSize(String(props.field.sizeHectares));
+      setCoords([props.field.latitude, props.field.longitude]);
+      setOblast(props.field.oblast);
+      setShellingLevel(Number(props.field.shellingImpactLevel));
+      setSowingDate(new Date(props.field.sowingDate).toISOString().split('T')[0]);
+
+      /*console.log(name);
+      console.log(cropType);
+      console.log(soilType);
+      console.log(size);
+      console.log(coords);
+      console.log(oblast);
+      console.log(shellingImpactLevels);
+      console.log(sowingDate);*/
+    }
+    setIsMapVisible(false);
+  }, [props.open]);
 
 
   const handleMapClick = async (lat: number, lng: number) => {
@@ -104,33 +213,68 @@ export const AddFieldModal = ({ open, onClose, onSubmitSuccess }: AddFieldModalP
     if (!name.trim()) return;
 
     setLoading(true);
-    const coords = OBLASTS_COORDINATES[oblast] || { lat: 48.3794, lng: 31.1656 };
-    const randomOffset = (Math.random() - 0.5) * 0.05;
 
-    const payload = {
-      name,
-      cropType: Number(cropType),
-      soilType: Number(soilType),
-      sizeHectares: parseFloat(size),
-      latitude: coords.lat + randomOffset,
-      longitude: coords.lng + randomOffset,
-      oblast,
-      shellingImpactLevel: Number(shellingLevel),
-      sowingDate: new Date(sowingDate).toISOString()
-    };
+    if (props.mode == "create") {
+      //const coords = OBLASTS_COORDINATES[oblast] || { lat: 48.3794, lng: 31.1656 };
+      //const randomOffset = (Math.random() - 0.5) * 0.05;
 
-    const result = await dispatch(createFieldAsync(payload));
-    if (createFieldAsync.fulfilled.match(result)) {
-      setLoading(false);
-      onSubmitSuccess();
+      const payload = {
+        name,
+        cropType: Number(cropType),
+        soilType: Number(soilType),
+        sizeHectares: parseFloat(size),
+        latitude: coords[0],
+        longitude: coords[1],
+        oblast,
+        shellingImpactLevel: Number(shellingLevel),
+        sowingDate: new Date(sowingDate).toISOString()
+      };
+
+      const result = await dispatch(createFieldAsync(payload));
+      if (createFieldAsync.fulfilled.match(result)) {
+        setLoading(false);
+        props.onSubmitSuccess();
+      }
     }
+    else if (props.field) {
+      const patchBody = CreatePatchBody({
+        id: props.field.id,
+        name: name,
+        cropType: cropType.toString(),
+        soilType: soilType.toString(),
+        sizeHectares: Number(size),
+        shellingImpactLevel: shellingLevel.toString(),
+        latitude: coords[0],
+        longitude: coords[1],
+        oblast: oblast,
+        sowingDate: sowingDate
+      },
+        props.field!);
+      if (patchBody.length == 0) {
+        props.onClose();
+        return;
+      }
+
+
+
+      const result = await dispatch(editFieldAsync({
+        id: props.field.id,
+        patchOperations: patchBody
+      }));
+      if (editFieldAsync.fulfilled.match(result)) {
+        setLoading(false);
+        props.onSubmitSuccess();
+      }
+    }
+
+
 
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog open={props.open} onClose={props.onClose} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ fontWeight: 700, borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
-        Додати нову ділянку поля
+        {props.mode == "create" ? "Додати нову ділянку поля" : "Оновлення ділянки"}
       </DialogTitle>
       {isMapVisible == true ? (
         <>
@@ -190,9 +334,9 @@ export const AddFieldModal = ({ open, onClose, onSubmitSuccess }: AddFieldModalP
               value={cropType}
               onChange={e => setCropType(Number(e.target.value))}
             >
-              <MenuItem value={1}>Пшениця</MenuItem>
-              <MenuItem value={2}>Соняшник</MenuItem>
-              <MenuItem value={3}>Кукурудза</MenuItem>
+              <MenuItem value={0}>Пшениця</MenuItem>
+              <MenuItem value={1}>Соняшник</MenuItem>
+              <MenuItem value={2}>Кукурудза</MenuItem>
             </TextField>
             <TextField
               select
@@ -201,9 +345,9 @@ export const AddFieldModal = ({ open, onClose, onSubmitSuccess }: AddFieldModalP
               value={soilType}
               onChange={e => setSoilType(Number(e.target.value))}
             >
-              <MenuItem value={1}>Чорнозем</MenuItem>
-              <MenuItem value={2}>Глина</MenuItem>
-              <MenuItem value={3}>Підзолистий</MenuItem>
+              <MenuItem value={0}>Чорнозем</MenuItem>
+              <MenuItem value={1}>Глина</MenuItem>
+              <MenuItem value={2}>Підзолистий</MenuItem>
             </TextField>
           </Box>
 
@@ -265,7 +409,7 @@ export const AddFieldModal = ({ open, onClose, onSubmitSuccess }: AddFieldModalP
 
         </DialogContent>
         <DialogActions sx={{ padding: '16px 24px', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
-          <Button onClick={onClose} color="inherit" disabled={loading}>
+          <Button onClick={props.onClose} color="inherit" disabled={loading}>
             Скасувати
           </Button>
           <Button
@@ -274,7 +418,7 @@ export const AddFieldModal = ({ open, onClose, onSubmitSuccess }: AddFieldModalP
             sx={{ backgroundColor: '#2E7D32', '&:hover': { backgroundColor: '#1B5E20' }, textTransform: 'none', fontWeight: 600 }}
             disabled={loading}
           >
-            Створити ділянку
+            {props.mode == "create" ? "Створити ділянку" : "Оновити ділянку"}
           </Button>
         </DialogActions>
       </form>}

@@ -12,8 +12,8 @@ public class PatchAgroFieldEndpoint : ICarterModule
         app.MapPatch("/api/fields/{id:guid}", [Authorize] async (Guid id, PatchOperation<AgroField>[] operation, ISender sender, CancellationToken cancellationToken) =>
         {
             var patch = PatchOperation<AgroField>.ConvertToJsonPatchDocument(operation);
-            var result = await sender.Send(new PatchAgroFieldRequest(id, patch), cancellationToken);
-            return Results.Ok(result);
+            await sender.Send(new PatchAgroFieldRequest(id, patch), cancellationToken);
+            return Results.NoContent();
         });
     }
 }

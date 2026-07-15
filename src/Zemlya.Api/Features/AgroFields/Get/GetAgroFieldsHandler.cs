@@ -16,10 +16,12 @@ public sealed record GetAgroFieldsResponse(
     decimal Longitude,
     string Oblast,
     string ShellingImpactLevel,
+    bool IsArchived,
     DateTime SowingDate,
     DateTime CreatedAt,
     DateTime UpdatedAt,
     ICollection<RecommendationDto> Recommendations);
+
 
 public sealed record RecommendationDto(
     Guid Id,
@@ -56,6 +58,7 @@ public class GetAgroFieldsHandler(DatabaseContext context) : IRequestHandler<Get
                 af.Longitude,
                 af.Oblast,
                 af.ShellingImpactLevel.ToString(),
+                af.IsArchived,
                 af.SowingDate,
                 af.CreatedAt,
                 af.UpdatedAt,
