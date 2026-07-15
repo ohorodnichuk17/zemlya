@@ -4,26 +4,24 @@ import NavigationLayout from './components/NavigationLayout'
 import { FieldsPage } from './pages/FieldsPage'
 import { FieldDashboardPage } from './pages/FieldDashboardPage'
 import { AboutPage } from './pages/AboutPage'
-import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
 import { LoginPage } from './pages/LoginPage'
 import { RegisterPage } from './pages/RegisterPage'
+import { ProtectedRoute } from './components/ProtectedRoute'
+import { NotFoundPage } from './pages/NotFoundPage'
 
 function App() {
    return (
-      <>
-         <Routes>
       <Routes>
+         <Route element={<ProtectedRoute />}>
             <Route path="/" element={<NavigationLayout />}>
                <Route index element={<FieldsPage />} />
                <Route path="/fields/:id" element={<FieldDashboardPage />} />
                <Route path="/about" element={<AboutPage />} />
             </Route>
-         </Routes>
-         
-      </>
+         </Route>
          <Route path="/login" element={<LoginPage />} />
          <Route path="/register" element={<RegisterPage />} />
+         <Route path="*" element={<NotFoundPage />} />
       </Routes>
    )
 }
