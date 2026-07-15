@@ -28,7 +28,13 @@ function NavigationLayout() {
 
    return (
       <Container maxWidth={false}
-         disableGutters sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', width: '100%', backgroundColor: '#F1F8E9', minWidth: '400px' }}>
+         disableGutters sx={{ display: 'flex', 
+         flexDirection: 'column', 
+         height: '100vh', 
+         width: '100%', 
+         backgroundColor: '#F1F8E9', 
+         minWidth: '400px',
+         overflowY:"auto", }}>
          <AppBar position="static" sx={{ backgroundColor: '#2E7D32', borderBottom: '3px solid #FBC02D', zIndex: 5 }}>
             <Container>
                <Toolbar disableGutters>
@@ -124,6 +130,11 @@ function NavigationLayout() {
             </Container>
          </AppBar>
          <Outlet />
+         <Box sx={{ textAlign: 'center', mt: 2 }}>
+            <Typography variant="caption" color="text.secondary">
+               Zemlya • 2026
+            </Typography>
+         </Box>
       </Container>
    );
 }

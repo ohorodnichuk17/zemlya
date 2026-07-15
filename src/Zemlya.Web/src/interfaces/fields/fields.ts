@@ -17,6 +17,7 @@ export interface IFieldsResponse {
    longitude: number;
    oblast: string;
    shellingImpactLevel: string;
+   isArchived:boolean;
    sowingDate: string;
    createdAt: string;
    updatedAt: string;
@@ -40,4 +41,25 @@ export interface IFieldCreateRequest {
    oblast: string;
    shellingImpactLevel: number;
    sowingDate: string;
+}
+export interface IFieldEdit {
+   id:string,
+   name : string,
+   cropType : string,
+   soilType : string,
+   sizeHectares : number,
+   latitude : number,
+   longitude : number,
+   oblast : string,
+   shellingImpactLevel : string,
+   sowingDate : string
+}
+export interface IPatchOperation{
+   op : "replace"| "add" | "remove",
+   path : string,
+   value : string
+}
+export interface IPatchRequest{
+   id:string,
+   patchOperations:IPatchOperation[]
 }

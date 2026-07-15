@@ -206,7 +206,7 @@ export const FieldDashboardPage = () => {
 
   if (error || !data) {
     return (
-      <Container sx={{ py: 6, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+      <Container sx={{ py: 6, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, height:"100%" }}>
         <Typography color="error">{error || 'Ділянку не знайдено'}</Typography>
         <Button startIcon={<ArrowBackIcon />} onClick={() => navigate('/')} variant="outlined" sx={{ color: '#2E7D32', borderColor: '#2E7D32' }}>
           Назад до списку

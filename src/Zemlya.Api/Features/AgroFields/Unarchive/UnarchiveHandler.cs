@@ -1,15 +1,17 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Zemlya.Api.Abstractions;
 using Zemlya.Api.Exceptions;
 using Zemlya.Api.Infrastructure.Database;
 
 namespace Zemlya.Api.Features.AgroFields.Unarchive;
 
 public sealed record UnarchiveRequest(Guid Id) : IRequest;
-public class UnarchiveHandler(DatabaseContext context) : IRequestHandler<UnarchiveRequest>
+public class UnarchiveHandler(DatabaseContext context, ITenantProvider tenantProvider) : IRequestHandler<UnarchiveRequest>
 {
     public async Task Handle(UnarchiveRequest request, CancellationToken cancellationToken)
     {
+        var tenatId = tenantProvider.GetCurrentTenantId();
         var agroField = await context.AgroFields.FirstOrDefaultAsync(af => af.Id == request.Id, cancellationToken);
 
         if (agroField == null)

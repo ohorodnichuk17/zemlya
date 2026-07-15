@@ -10,9 +10,9 @@ public class PatchAgroFieldEndpoint : ICarterModule
         app.MapPatch("/api/fields/{id:guid}", async (Guid id, PatchOperation<AgroField>[] operation, ISender sender, CancellationToken cancellationToken) =>
         {
             var patch = PatchOperation<AgroField>.ConvertToJsonPatchDocument(operation);
-            var result = await sender.Send(new PatchAgroFieldRequest(id, patch), cancellationToken);
-            return Results.Ok(result);
-        })
-        .RequireAuthorization("CanWrite"); 
+
+            await sender.Send(new PatchAgroFieldRequest(id, patch), cancellationToken);
+            return Results.NoContent();
+        }).RequireAuthorization("CanWrite");
     }
 }

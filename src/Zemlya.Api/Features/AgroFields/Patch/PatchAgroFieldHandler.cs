@@ -7,13 +7,13 @@ using Zemlya.Api.Infrastructure.Database;
 
 namespace Zemlya.Api.Features.AgroFields.Patch;
 
-public sealed record PatchAgroFieldRequest(Guid Id, JsonPatchDocument<AgroField> Patch) : IRequest<Guid>;
+public sealed record PatchAgroFieldRequest(Guid Id, JsonPatchDocument<AgroField> Patch) : IRequest;
 public sealed class PatchAgroFieldHandler(DatabaseContext context,
     IZemlyaEngine engine, 
     IWeatherService weatherService,
-    ILogger<PatchAgroFieldHandler> logger) : IRequestHandler<PatchAgroFieldRequest, Guid>
+    ILogger<PatchAgroFieldHandler> logger) : IRequestHandler<PatchAgroFieldRequest>
 {
-    public async Task<Guid> Handle(PatchAgroFieldRequest request, CancellationToken cancellationToken)
+    public async Task Handle(PatchAgroFieldRequest request, CancellationToken cancellationToken)
     {
         var agroField = await context.AgroFields.FirstOrDefaultAsync(af => af.Id == request.Id, cancellationToken);
 
@@ -62,6 +62,5 @@ public sealed class PatchAgroFieldHandler(DatabaseContext context,
 
         logger.LogInformation("Changes are saved");
 
-        return agroField.Id;
     }
 }
