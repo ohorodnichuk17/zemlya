@@ -41,7 +41,10 @@ public sealed class PatchAgroFieldHandler(DatabaseContext context,
         {
             var forecast = await weatherService.GetForecastAsync(agroField.Latitude, agroField.Longitude, cancellationToken);
 
-            if(forecast == null) logger.LogWarning("Forecast is null, passing an empty array");
+            if(forecast == null)
+            {
+                logger.LogWarning("Forecast is null, passing an empty array");
+            }
 
             context.Recommendations.RemoveRange(context.Recommendations.Where(r => r.FieldId == agroField.Id));
 

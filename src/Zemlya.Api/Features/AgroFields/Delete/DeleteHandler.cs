@@ -12,12 +12,16 @@ public class DeleteHandler(DatabaseContext context, ITenantProvider tenantProvid
     public async Task Handle(DeleteRequest request, CancellationToken cancellationToken)
     {
         var tenatId = tenantProvider.GetCurrentTenantId();
-        var agroField = await context.AgroFields.FirstOrDefaultAsync(af => af.Id == request.Id,cancellationToken);
+        var agroField = await context.AgroFields.FirstOrDefaultAsync(af => af.Id == request.Id, cancellationToken);
 
         if (agroField == null)
+        {
             throw new KeyNotFoundException("Agro field isn't find");
+        }
         if (agroField.TenantId != tenatId)
+        {
             throw new KeyNotFoundException("You haven't access");
+        }
         agroField.IsDeleted = true;
         if (agroField.Recommendations.Any())
         {

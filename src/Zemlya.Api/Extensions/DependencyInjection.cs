@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Zemlya.Api.Abstractions;
 using Zemlya.Api.Behaviors;
+using Zemlya.Api.Features.Auth;
 using Zemlya.Api.Features.Recommendations.Services;
 using Zemlya.Api.Infrastructure.Auth;
 using Zemlya.Api.Infrastructure.Database;
@@ -46,7 +47,6 @@ public static class DependencyInjection
             });
             return services;
         }
-
 
         public IServiceCollection AddPersistence(IConfiguration configuration)
         {
@@ -91,7 +91,6 @@ public static class DependencyInjection
                     ValidAudience = configuration["Jwt:Audience"],
                     ClockSkew = TimeSpan.Zero,
                     IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(configuration["Jwt:SigningKey"]!)),
-
                 };
             });
             services.AddAuthorization(conf =>
@@ -99,6 +98,20 @@ public static class DependencyInjection
                 conf.DefaultPolicy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
                     .RequireAuthenticatedUser()
                     .Build();
+                
+                conf.AddPolicy("OwnerOnly", policy => 
+                    policy.RequireRole(nameof(UserRole.Owner)));
+                
+                conf.AddPolicy("CanWrite", policy =>
+                    policy.RequireRole(
+                        nameof(UserRole.Owner), 
+                        nameof(UserRole.Agronomist)));
+                                
+                conf.AddPolicy("AllRoles", policy =>
+                    policy.RequireRole(
+                        nameof(UserRole.Owner), 
+                        nameof(UserRole.Agronomist),
+                        nameof(UserRole.Auditor)));
             });
             return services;
         }

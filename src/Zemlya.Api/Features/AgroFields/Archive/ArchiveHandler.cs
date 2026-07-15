@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Zemlya.Api.Abstractions;
+using Zemlya.Api.Exceptions;
 using Zemlya.Api.Infrastructure.Database;
 
 namespace Zemlya.Api.Features.AgroFields.Archive;
@@ -14,11 +15,14 @@ public class ArchiveHandler(DatabaseContext context, ITenantProvider tenantProvi
         var agroField = await context.AgroFields.FirstOrDefaultAsync(af => af.Id == request.Id, cancellationToken);        
 
         if (agroField == null)
-            throw new KeyNotFoundException("Agro field isn't find");
-        if (agroField.TenantId != tenatId)
-            throw new KeyNotFoundException("You haven't access");
-        if (agroField.IsArchived == true)
-            throw new KeyNotFoundException("Agro field is already archived");
+        {
+            throw new NotFoundException("Agro field isn't find");
+        }
+        if(agroField.IsArchived)
+        {
+            throw new NotFoundException("Agro field is already archived");
+        }
+
 
         agroField.IsArchived = true;
 
