@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Zemlya.Api.Exceptions;
 using Zemlya.Api.Infrastructure.Database;
 
 namespace Zemlya.Api.Features.AgroFields.Delete;
@@ -12,7 +13,9 @@ public class DeleteHandler(DatabaseContext context) : IRequestHandler<DeleteRequ
         var agroField = await context.AgroFields.FirstOrDefaultAsync(af => af.Id == request.Id,cancellationToken);
 
         if (agroField == null)
-            throw new KeyNotFoundException("Agro field isn't find");
+        {
+            throw new NotFoundException("Agro field isn't find");
+        }
 
         agroField.IsDeleted = true;
         if (agroField.Recommendations.Any())
