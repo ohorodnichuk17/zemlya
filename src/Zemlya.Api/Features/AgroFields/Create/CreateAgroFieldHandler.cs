@@ -1,5 +1,6 @@
 using MediatR;
 using Zemlya.Api.Abstractions;
+using Zemlya.Api.Exceptions;
 using Zemlya.Api.Infrastructure.Database;
 
 namespace Zemlya.Api.Features.AgroFields.Create;
@@ -25,7 +26,7 @@ public sealed class CreateAgroFieldHandler(
     public async Task<Guid> Handle(CreateAgroFieldRequest request, CancellationToken cancellationToken)
     {
         var tenantId = tenantProvider.GetCurrentTenantId()
-            ?? throw new InvalidOperationException("TenantId not found in token. Is the user authenticated?");
+            ?? throw new UnauthorizedException("TenantId not found in token. Is the user authenticated?");
 
         var newAgroField = new AgroField
         {

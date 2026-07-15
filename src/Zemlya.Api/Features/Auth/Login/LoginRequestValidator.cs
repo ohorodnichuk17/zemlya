@@ -7,11 +7,11 @@ public sealed class LoginRequestValidator : AbstractValidator<LoginRequest>
     public LoginRequestValidator()
     {
         RuleFor(x => x.Email)
-            .NotEmpty()
-            .EmailAddress();
+            .NotEmpty().WithErrorCode("email_empty")
+            .EmailAddress().WithErrorCode("email_invalid");
 
         RuleFor(x => x.Password)
-            .NotEmpty()
-            .MinimumLength(8);
+            .NotEmpty().WithErrorCode("password_empty")
+            .MinimumLength(8).WithErrorCode("password_too_short");
     }
 }

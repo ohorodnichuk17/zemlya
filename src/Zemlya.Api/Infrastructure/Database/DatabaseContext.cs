@@ -38,7 +38,7 @@ public class DatabaseContext : DbContext
 
         modelBuilder.Entity<AgroField>(entity =>
         {
-            entity.ToTable("AgroFields").HasQueryFilter(f => !f.IsDeleted);
+            entity.ToTable("AgroFields");
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Name).HasMaxLength(100).IsRequired();
             entity.Property(e => e.CropType).HasConversion<string>();

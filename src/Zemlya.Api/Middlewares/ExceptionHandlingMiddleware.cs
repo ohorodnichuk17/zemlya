@@ -33,9 +33,21 @@ public class ExceptionHandlingMiddleware(
             _                      => StatusCodes.Status500InternalServerError
         };
 
+        var errorCode = exception switch
+        {
+            DomainException de => de.ErrorCode,
+            _ => "internal_server_error"
+        };
+
+        IEnumerable<ValidationErrorResponse>? validationErrors = exception is ValidationException ve
+            ? ve.Errors.Select(x => new ValidationErrorResponse(x.Field, x.Message, x.ErrorCode))
+            : null;
+
         var response = new ErrorResponse(
             StatusCode: context.Response.StatusCode,
-            Error: exception.Message);
+            Error: exception.Message,
+            ErrorCode: errorCode,
+            Errors: validationErrors);
 
         var json = JsonSerializer.Serialize(response, new JsonSerializerOptions
         {
@@ -47,4 +59,10 @@ public class ExceptionHandlingMiddleware(
     }
 }
 
-public sealed record ErrorResponse(int StatusCode, string Error);
+public sealed record ValidationErrorResponse(string Field, string Message, string ErrorCode);
+
+public sealed record ErrorResponse(
+    int StatusCode, 
+    string Error, 
+    string ErrorCode,
+    IEnumerable<ValidationErrorResponse>? Errors = null);

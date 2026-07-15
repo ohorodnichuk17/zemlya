@@ -7,22 +7,22 @@ public sealed class RegisterRequestValidator : AbstractValidator<RegisterRequest
     public RegisterRequestValidator()
     {
         RuleFor(x => x.FarmName)
-            .NotEmpty()
-            .MaximumLength(100);
+            .NotEmpty().WithErrorCode("farm_name_empty")
+            .MaximumLength(100).WithErrorCode("farm_name_too_long");
 
         RuleFor(x => x.Email)
-            .NotEmpty()
-            .EmailAddress()
-            .MaximumLength(100);
+            .NotEmpty().WithErrorCode("email_empty")
+            .EmailAddress().WithErrorCode("email_invalid")
+            .MaximumLength(100).WithErrorCode("email_too_long");
 
         RuleFor(x => x.Password)
-            .NotEmpty()
-            .MinimumLength(8)
-            .Matches("[A-Z]").WithMessage("Password must contain at least one uppercase letter")
-            .Matches("[0-9]").WithMessage("Password must contain at least one digit")
-            .Matches("[^a-zA-Z0-9]").WithMessage("Password must contain at least one special character");
+            .NotEmpty().WithErrorCode("password_empty")
+            .MinimumLength(8).WithErrorCode("password_too_short")
+            .Matches("[A-Z]").WithErrorCode("password_no_uppercase")
+            .Matches("[0-9]").WithErrorCode("password_no_digit")
+            .Matches("[^a-zA-Z0-9]").WithErrorCode("password_no_special");
 
         RuleFor(x => x.Role)
-            .IsInEnum().WithMessage("Role must be Owner, Agronomist, or Auditor");
+            .IsInEnum().WithErrorCode("role_invalid");
     }
 }
