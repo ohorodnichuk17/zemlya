@@ -34,7 +34,7 @@ public sealed class LoginHandler(
         if (user == null)
         {
             logger.LogWarning("Login failed — email not found: {Email}", request.Email);
-            throw new UnauthorizedException("Invalid credentials");
+            throw new UnauthorizedException("Invalid credentials", "invalid_credentials");
         }
 
         var isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
@@ -42,8 +42,9 @@ public sealed class LoginHandler(
         if (!isPasswordValid)
         {
             logger.LogWarning("Login failed — invalid password for email: {Email}", request.Email);
-            throw new UnauthorizedException("Invalid credentials");
+            throw new UnauthorizedException("Invalid credentials", "invalid_credentials");
         }
+
         
         var claims = new JwtUserClaims(
             UserId: user.Id,

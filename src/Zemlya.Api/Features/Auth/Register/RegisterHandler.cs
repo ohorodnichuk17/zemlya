@@ -34,17 +34,43 @@ public sealed class RegisterHandler(
         if (emailExists)
         {
             logger.LogWarning("Registration attempt with already existing email: {Email}", request.Email);
-            throw new ConflictException("Email already exists.");
+            throw new ConflictException("Email already exists.", "email_already_exists");
+        }
+
+        var existingTenant = await dbContext.Tenants
+            .FirstOrDefaultAsync(x => x.Name == request.FarmName, cancellationToken);
+
+        Tenant tenant;
+
+        if (request.Role == UserRole.Owner)
+        {
+            if (existingTenant != null)
+            {
+                logger.LogWarning("Farm name already exists: {FarmName}", request.FarmName);
+                throw new ConflictException("Farm already exists.", "farm_already_exists");
+            }
+
+            tenant = new Tenant
+            {
+                Id = Guid.NewGuid(),
+                Name = request.FarmName,
+                CreatedAt = DateTime.UtcNow,
+            };
+            dbContext.Tenants.Add(tenant);
+        }
+        else
+        {
+            if (existingTenant == null)
+            {
+                logger.LogWarning("Farm not found for joining: {FarmName}", request.FarmName);
+                throw new NotFoundException("Farm not found.", "farm_not_found");
+            }
+
+            tenant = existingTenant;
         }
 
         var hash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
-        var tenant = new Tenant
-        {
-            Id = Guid.NewGuid(),
-            Name = request.FarmName,
-            CreatedAt = DateTime.UtcNow,
-        };
         
         var user = new User
         {
@@ -67,7 +93,6 @@ public sealed class RegisterHandler(
             IsRevoked = false
         };
         
-        dbContext.Tenants.Add(tenant);
         dbContext.Users.Add(user);
         dbContext.RefreshTokens.Add(refreshToken);
         await dbContext.SaveChangesAsync(cancellationToken);
