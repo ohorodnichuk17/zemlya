@@ -4,6 +4,7 @@ import NavigationLayout from './components/NavigationLayout'
 import { FieldsPage } from './pages/FieldsPage'
 import { FieldDashboardPage } from './pages/FieldDashboardPage'
 import { AboutPage } from './pages/AboutPage'
+import { OrganicMapPage } from './pages/OrganicMapPage'
 import { LoginPage } from './pages/LoginPage'
 import { RegisterPage } from './pages/RegisterPage'
 import { ProtectedRoute } from './components/ProtectedRoute'
@@ -17,8 +18,10 @@ function App() {
                <Route index element={<FieldsPage />} />
                <Route path="/fields/:id" element={<FieldDashboardPage />} />
                <Route path="/about" element={<AboutPage />} />
+               <Route path="/map" element={<OrganicMapPage />} />
             </Route>
          </Route>
+
          <Route path="/login" element={<LoginPage />} />
          <Route path="/register" element={<RegisterPage />} />
          <Route path="*" element={<NotFoundPage />} />
