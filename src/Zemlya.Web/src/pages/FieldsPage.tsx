@@ -22,10 +22,14 @@ export const FieldsPage = () => {
    const dispatch = useAppDispatch();
    const paginationFieldsResponse = useAppSelector(state => state.fieldsReducer.paginationFieldsResponse);
    const user = useAppSelector(state => state.authReducer.user);
+   const token = useAppSelector(state => state.authReducer.token);
    const isAuditor = user?.role === 'Auditor';
 
    const refreshFields = () => {
-      dispatch(getFieldsAsync(pagination));
+      if (token) {
+         dispatch(getFieldsAsync({ pagination, token }));
+      }
+
    };
 
    useEffect(() => {
@@ -110,17 +114,20 @@ export const FieldsPage = () => {
                   key={field.id}
                   cardInfo={field}
                   archiveUnarchiveHandler={async () => {
-                     await dispatch(pagination.isArchived == false ? archiveFieldAsync(field.id) : unarchiveFieldAsync(field.id));
-                     if (paginationFieldsResponse.fields.length <= 1) {
-                        setPagination({
-                           ...pagination,
-                           page: 0,
-                           sizeOfPage: 6,
-                        })
+                     if (token) {
+                        await dispatch(pagination.isArchived == false ? archiveFieldAsync({ id: field.id, token }) : unarchiveFieldAsync({ id: field.id, token }));
+                        if (paginationFieldsResponse.fields.length <= 1) {
+                           setPagination({
+                              ...pagination,
+                              page: 0,
+                              sizeOfPage: 6,
+                           })
+                        }
+                        else {
+                           refreshFields();
+                        }
                      }
-                     else {
-                        refreshFields();
-                     }
+
 
                   }}
                   editHandler={() => {
@@ -172,7 +179,7 @@ export const FieldsPage = () => {
                />}
          </Box>
 
-         
+
          <FieldFormModal
             open={isModalOpen}
             mode={modalMode}
@@ -197,13 +204,16 @@ export const FieldsPage = () => {
                setDeletedFieldId("");
             }}
             handleAgree={async () => {
-               if (deletedFieldId !== "") {
-                  await dispatch(removeFieldAsync(deletedFieldId));
-                  refreshFields();
+               if (token) {
+                  if (deletedFieldId !== "") {
+                     await dispatch(removeFieldAsync({id:deletedFieldId,token}));
+                     refreshFields();
+                  }
+                  setIsConfirmationOpen(false);
+                  setDeletedFieldName("");
+                  setDeletedFieldId("");
                }
-               setIsConfirmationOpen(false);
-               setDeletedFieldName("");
-               setDeletedFieldId("");
+
             }}
          >
          </ConfirmationDialog>

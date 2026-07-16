@@ -4,7 +4,6 @@ import type { IPagination, IValidationError } from "../../interfaces/general";
 import type { AxiosError } from "axios";
 import { api } from "../../axios/api";
 
-const jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3YTlkNTNhZi0yNzZmLTRjNDgtOTdmMC0zYjM5NmNmODAxNDkiLCJlbWFpbCI6Im5hemFyQGdtYWlsLmNvbSIsInJvbGUiOiJPd25lciIsInRlbmFudElkIjoiMGVmN2I1YjgtYzg1My00MDdlLTg2MDQtYTJjZjA4MzA1YTAwIiwibmJmIjoxNzg0MTE0Nzk0LCJleHAiOjE3ODQxMTY1OTQsImlzcyI6InplbWx5YS1hcGkiLCJhdWQiOiJ6ZW1seWEtY2xpZW50In0.1cdd0AW3ShZlxXGnI073uNFpqY_j8Av7WHdFVre354I";
 function ConvertError(error: AxiosError<IValidationError>) {
     const data = error.response!.data;
 
@@ -22,12 +21,12 @@ function ConvertError(error: AxiosError<IValidationError>) {
 }
 
 
-export const getFieldsAsync = createAsyncThunk<IPaginationFieldsResponse, IPagination, { rejectValue: IValidationError }>
+export const getFieldsAsync = createAsyncThunk<IPaginationFieldsResponse, {pagination : IPagination, token : string}, { rejectValue: IValidationError }>
     (
         "fields/get-fields-async",
-        async (pagination, { rejectWithValue }) => {
+        async (data, { rejectWithValue }) => {
             try {
-                const response = await api.get(`${import.meta.env.VITE_BASE_URL}/api/fields`, { headers: { Authorization: `Bearer ${jwt}` }, params: pagination });
+                const response = await api.get(`${import.meta.env.VITE_BASE_URL}/api/fields`, { headers: { Authorization: `Bearer ${data.token}` }, params: data.pagination });
 
                 return response.data;
             } catch (err: any) {
@@ -61,11 +60,11 @@ export const getOblastAsync = createAsyncThunk<string | null, { lat: number, lng
         }
     }
 )
-export const createFieldAsync = createAsyncThunk<void, IFieldCreateRequest, { rejectValue: IValidationError }>(
+export const createFieldAsync = createAsyncThunk<void, {fieldData : IFieldCreateRequest, token : string}, { rejectValue: IValidationError }>(
     "fields/create-field-async",
-    async (fieldData, { rejectWithValue }) => {
+    async (data, { rejectWithValue }) => {
         try {
-            await api.post(`${import.meta.env.VITE_BASE_URL}/api/fields`, fieldData, { headers: { Authorization: `Bearer ${jwt}` } });
+            await api.post(`${import.meta.env.VITE_BASE_URL}/api/fields`, data.fieldData, { headers: { Authorization: `Bearer ${data.token}` } });
         } catch (err: any) {
             const error: AxiosError<IValidationError> = err;
 
@@ -74,11 +73,11 @@ export const createFieldAsync = createAsyncThunk<void, IFieldCreateRequest, { re
         }
     }
 )
-export const archiveFieldAsync = createAsyncThunk<void, string, { rejectValue: IValidationError }>(
+export const archiveFieldAsync = createAsyncThunk<void, {id : string, token : string}, { rejectValue: IValidationError }>(
     "fields/archive-field-async",
-    async (id, { rejectWithValue }) => {
+    async (data, { rejectWithValue }) => {
         try {
-            await api.patch(`${import.meta.env.VITE_BASE_URL}/api/fields/${id}/archive`, {}, { headers: { Authorization: `Bearer ${jwt}` } });
+            await api.patch(`${import.meta.env.VITE_BASE_URL}/api/fields/${data.id}/archive`, {}, { headers: { Authorization: `Bearer ${data.token}` } });
         } catch (err: any) {
             const error: AxiosError<IValidationError> = err;
 
@@ -87,11 +86,11 @@ export const archiveFieldAsync = createAsyncThunk<void, string, { rejectValue: I
         }
     }
 )
-export const unarchiveFieldAsync = createAsyncThunk<void, string, { rejectValue: IValidationError }>(
+export const unarchiveFieldAsync = createAsyncThunk<void, {id : string, token : string}, { rejectValue: IValidationError }>(
     "fields/unarchive-field-async",
-    async (id, { rejectWithValue }) => {
+    async (data, { rejectWithValue }) => {
         try {
-            await api.patch(`${import.meta.env.VITE_BASE_URL}/api/fields/${id}/unarchive`, {}, { headers: { Authorization: `Bearer ${jwt}` } });
+            await api.patch(`${import.meta.env.VITE_BASE_URL}/api/fields/${data.id}/unarchive`, {}, { headers: { Authorization: `Bearer ${data.token}` } });
         } catch (err: any) {
             const error: AxiosError<IValidationError> = err;
 
@@ -100,11 +99,11 @@ export const unarchiveFieldAsync = createAsyncThunk<void, string, { rejectValue:
         }
     }
 )
-export const removeFieldAsync = createAsyncThunk<void, string, { rejectValue: IValidationError }>(
+export const removeFieldAsync = createAsyncThunk<void, {id : string, token : string}, { rejectValue: IValidationError }>(
     "fields/remove-field-async",
-    async (id, { rejectWithValue }) => {
+    async (data, { rejectWithValue }) => {
         try {
-            await api.delete(`${import.meta.env.VITE_BASE_URL}/api/fields/${id}`, { headers: { Authorization: `Bearer ${jwt}` } });
+            await api.delete(`${import.meta.env.VITE_BASE_URL}/api/fields/${data.id}`, { headers: { Authorization: `Bearer ${data.token}` } });
         } catch (err: any) {
             const error: AxiosError<IValidationError> = err;
 
@@ -113,15 +112,15 @@ export const removeFieldAsync = createAsyncThunk<void, string, { rejectValue: IV
         }
     }
 )
-export const editFieldAsync = createAsyncThunk<void, IPatchRequest, { rejectValue: IValidationError }>(
+export const editFieldAsync = createAsyncThunk<void, {patchData : IPatchRequest, token : string}, { rejectValue: IValidationError }>(
     "fields/edit-field-async",
-    async (patchData, { rejectWithValue }) => {
+    async (data, { rejectWithValue }) => {
         try {
-            await api.patch(`${import.meta.env.VITE_BASE_URL}/api/fields/${patchData.id}`,
-                patchData.patchOperations,
+            await api.patch(`${import.meta.env.VITE_BASE_URL}/api/fields/${data.patchData.id}`,
+                data.patchData.patchOperations,
                 {
                     headers: {
-                        Authorization: `Bearer ${jwt}`
+                        Authorization: `Bearer ${data.token}`
                     }
                 }
             );
