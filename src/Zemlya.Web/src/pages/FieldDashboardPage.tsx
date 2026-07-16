@@ -20,6 +20,7 @@ import '../assets/fonts/OpenSans-Regular-normal.js';
 import { format } from 'date-fns';
 import { autoTable } from 'jspdf-autotable'
 import brand from '../assets/images/brand.png';
+import { crops, shellingImpactLevels, soils } from '../types/dataTypes.js';
 
 
 
@@ -138,12 +139,12 @@ export const FieldDashboardPage = () => {
     doc.setFontSize(15);
 
     doc.text(`Поле: ${data?.fieldName || 'Невідомо'}`, 10, yOffset += 20);
-    doc.text(`Культура: ${data?.crop || 'Невідомо'}`, 10, yOffset += 10);
-    doc.text(`Тип грунту: ${data?.soil || 'Невідомо'}`, 10, yOffset += 10);
+    doc.text(`Культура: ${crops[data!.crop].name || 'Невідомо'}`, 10, yOffset += 10);
+    doc.text(`Тип грунту: ${soils[data!.soil].name || 'Невідомо'}`, 10, yOffset += 10);
     doc.text(`Площа (Га): ${data?.sizeHectares || 'Невідомо'}`, 10, yOffset += 10);
     doc.text(`Область: ${data?.oblast || 'Невідомо'}`, 10, yOffset += 10);
     doc.text(`Зона: ${data?.agroClimaticZone || 'Невідомо'}`, 10, yOffset += 10);
-    doc.text(`Вплив війни: ${data?.shellingImpactLevel || 'Невідомо'}`, 10, yOffset += 10);
+    doc.text(`Вплив війни: ${shellingImpactLevels[data!.shellingImpactLevel].name || 'Невідомо'}`, 10, yOffset += 10);
     doc.text(`Дата посіву: ${data?.sowingDate ? format(data!.sowingDate, 'dd.MM.yyyy') : 'Невідомо'}`, 10, yOffset += 10);
     doc.text(`Днів від посіву: ${data?.daysSinceSowing || 'Невідомо'}`, 10, yOffset += 10);
     doc.text(`Фаза росту: ${data?.growthStage || 'Невідомо'}`, 10, yOffset += 10);
@@ -228,7 +229,7 @@ export const FieldDashboardPage = () => {
           </Typography>
         </Breadcrumbs>
 
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', columnGap:"10px" }}>
           <Button
             startIcon={<ArrowBackIcon />}
             onClick={() => navigate('/')}
@@ -241,10 +242,22 @@ export const FieldDashboardPage = () => {
           >
             Назад до списку полів
           </Button>
+          {/*<Button
+            onClick={() => {}}
+            sx={{
+              marginLeft: "auto",
+              color: 'white',
+              backgroundColor: '#2E7D32',
+              textTransform: 'none',
+              fontWeight: 600,
+              '&:hover': { backgroundColor: 'rgb(40, 106, 43)' }
+            }}
+          >
+            Аналіз орфознімку
+          </Button>*/}
           <Button
             onClick={() => handleDownloadReport()}
             sx={{
-              marginLeft: "100",
               color: 'white',
               backgroundColor: '#2E7D32',
               textTransform: 'none',

@@ -14,7 +14,8 @@ import { IconButton } from '@mui/material';
 import 'leaflet/dist/leaflet.css';
 import point from '../assets/images/point.png';
 import { createFieldAsync, editFieldAsync, getOblastAsync } from '../redux/actions/fieldsActions';
-import { useAppDispatch } from '../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { Token } from "@mui/icons-material";
 
 interface FieldFormModalProps {
   open: boolean;
@@ -149,6 +150,8 @@ export const FieldFormModal = (props: FieldFormModalProps) => {
     new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
   );
   const [loading, setLoading] = useState(false);
+
+  const token = useAppSelector(state => state.authReducer.token);
   const dispatch = useAppDispatch();
 
   const clearForms = () => {
@@ -209,64 +212,67 @@ export const FieldFormModal = (props: FieldFormModalProps) => {
     }
   }
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name.trim()) return;
+    if (token) {
+      e.preventDefault();
+      if (!name.trim()) return;
 
-    setLoading(true);
+      setLoading(true);
 
-    if (props.mode == "create") {
-      //const coords = OBLASTS_COORDINATES[oblast] || { lat: 48.3794, lng: 31.1656 };
-      //const randomOffset = (Math.random() - 0.5) * 0.05;
+      if (props.mode == "create") {
+        //const coords = OBLASTS_COORDINATES[oblast] || { lat: 48.3794, lng: 31.1656 };
+        //const randomOffset = (Math.random() - 0.5) * 0.05;
 
-      const payload = {
-        name,
-        cropType: Number(cropType),
-        soilType: Number(soilType),
-        sizeHectares: parseFloat(size),
-        latitude: coords[0],
-        longitude: coords[1],
-        oblast,
-        shellingImpactLevel: Number(shellingLevel),
-        sowingDate: new Date(sowingDate).toISOString()
-      };
+        const payload = {
+          name,
+          cropType: Number(cropType),
+          soilType: Number(soilType),
+          sizeHectares: parseFloat(size),
+          latitude: coords[0],
+          longitude: coords[1],
+          oblast,
+          shellingImpactLevel: Number(shellingLevel),
+          sowingDate: new Date(sowingDate).toISOString()
+        };
 
-      const result = await dispatch(createFieldAsync(payload));
-      if (createFieldAsync.fulfilled.match(result)) {
-        setLoading(false);
-        props.onSubmitSuccess();
+        const result = await dispatch(createFieldAsync({fieldData:payload,token}));
+        if (createFieldAsync.fulfilled.match(result)) {
+          setLoading(false);
+          props.onSubmitSuccess();
+        }
       }
+      else if (props.field) {
+        const patchBody = CreatePatchBody({
+          id: props.field.id,
+          name: name,
+          cropType: cropType.toString(),
+          soilType: soilType.toString(),
+          sizeHectares: Number(size),
+          shellingImpactLevel: shellingLevel.toString(),
+          latitude: coords[0],
+          longitude: coords[1],
+          oblast: oblast,
+          sowingDate: sowingDate
+        },
+          props.field!);
+        if (patchBody.length == 0) {
+          props.onClose();
+          return;
+        }
+
+
+
+        const result = await dispatch(editFieldAsync({patchData : {
+          id: props.field.id,
+          patchOperations: patchBody
+        },token}));
+        if (editFieldAsync.fulfilled.match(result)) {
+          setLoading(false);
+          props.onSubmitSuccess();
+        }
+      }
+
+
     }
-    else if (props.field) {
-      const patchBody = CreatePatchBody({
-        id: props.field.id,
-        name: name,
-        cropType: cropType.toString(),
-        soilType: soilType.toString(),
-        sizeHectares: Number(size),
-        shellingImpactLevel: shellingLevel.toString(),
-        latitude: coords[0],
-        longitude: coords[1],
-        oblast: oblast,
-        sowingDate: sowingDate
-      },
-        props.field!);
-      if (patchBody.length == 0) {
-        props.onClose();
-        return;
-      }
-
-
-
-      const result = await dispatch(editFieldAsync({
-        id: props.field.id,
-        patchOperations: patchBody
-      }));
-      if (editFieldAsync.fulfilled.match(result)) {
-        setLoading(false);
-        props.onSubmitSuccess();
-      }
-    }
-
 
 
   };
