@@ -174,7 +174,7 @@ export const FieldDashboardPage = () => {
       })
       console.log(averageRain);
       autoTable(doc, {
-        head: [["Дата", "Середня температура (°C)", "Середня вологість (%)", "Середні опади (мм)"]],
+        head: [["Дата", "Середня температура повітря (°C)", "Середня вологість повітря (%)", "Середні опади (мм)"]],
         body: datesOfForecast?.map((date, index) => [date, averageTemperature![index], averageHumidity![index], averageRain![index]]) || [],
         styles: {
           font: "OpenSans-Regular",
