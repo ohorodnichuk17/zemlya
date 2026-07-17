@@ -6,9 +6,7 @@ public class MockWeatherService(HttpClient httpClient) : IWeatherService
 {
     public Task<CurrentWeather?> GetWeatherAsync(decimal lat, decimal lng, CancellationToken ct)
     {
-        // Повертаємо спеку для тестування коефіцієнтів поливу
         return Task.FromResult<CurrentWeather?>(new CurrentWeather(Temperature: 30m, Humidity: 35m, Main: "Unknown", Description: "No description", Rain1h: 0m));
-        // Або розкоментуй це для тестування екологічного блокування добрив:
         // return Task.FromResult<CurrentWeather?>(new CurrentWeather(Temperature: 18m, Humidity: 85m, Rain1h: 2.5m));
     }
 
@@ -23,7 +21,6 @@ public class MockWeatherService(HttpClient httpClient) : IWeatherService
             var temp = Math.Round(22m + 8m * (decimal)Math.Sin((hour - 6) * Math.PI / 12), 2);
             var humidity = Math.Round(55m - 15m * (decimal)Math.Sin((hour - 6) * Math.PI / 12), 2);
             
-            // Симулюємо дощ на 3-й день (індекси від 16 до 22)
             decimal rain = 0m;
             if (i >= 16 && i <= 22)
             {

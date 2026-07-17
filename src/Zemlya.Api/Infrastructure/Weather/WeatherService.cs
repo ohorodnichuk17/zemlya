@@ -31,7 +31,7 @@ public class WeatherService(
                 logger.LogError("Failed to fetch weather data. Status: {0}, Error: {1}", response.StatusCode, errorContent);
                 return null;
             }
-
+            
             var weatherData = await response.Content.ReadFromJsonAsync<WeatherResponse>(cancellationToken: cancellationToken);
             
             if (weatherData == null)
