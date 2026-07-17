@@ -149,7 +149,7 @@ export const FieldDashboardPage = () => {
     doc.text(`Днів від посіву: ${data?.daysSinceSowing || 'Невідомо'}`, 10, yOffset += 10);
     doc.text(`Фаза росту: ${data?.growthStage || 'Невідомо'}`, 10, yOffset += 10);
     doc.text(`Поточна температура: ${data?.currentTemperature || 'Невідомо'} °C`, 10, yOffset += 10);
-    doc.text(`Вологість: ${data?.currentHumidity || 'Невідомо'} %`, 10, yOffset += 10);
+    doc.text(`Вологість повітря: ${data?.currentHumidity || 'Невідомо'} %`, 10, yOffset += 10);
     doc.text(`Опади (мм): ${data?.rainAmount || 'Невідомо'}`, 10, yOffset += 10);
     doc.text(`Опис погоди: ${data?.weatherDescription || 'Невідомо'}`, 10, yOffset += 10);
 
