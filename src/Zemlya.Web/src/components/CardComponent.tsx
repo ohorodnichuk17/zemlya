@@ -50,8 +50,8 @@ export const CardComponent = (props: {
          transition: 'all 0.3s',
          '&:hover': {
             transform: 'translateY(-4px)',
-            boxShadow: '0 8px 24px rgba(76, 175, 80, 0.15)',
-            borderColor: '#4CAF50'
+            boxShadow: '0 8px 24px rgba(46, 125, 50, 0.12)',
+            borderColor: '#81C784'
          },
          border: '1px solid rgba(0, 0, 0, 0.06)'
       }}>
@@ -71,22 +71,64 @@ export const CardComponent = (props: {
             </Box>
          </CardContent>
          <CardActions sx={{ padding: '12px 16px 18px', borderTop: '1px solid rgba(0,0,0,0.04)' }}>
-            <Box sx={{ display: "flex", flexDirection: "column", width: "100%", rowGap: "5px" }}>
+            <Box sx={{ display: "flex", flexDirection: "column", width: "100%", rowGap: "8px" }}>
                {!isAuditor && (
-                  <Box sx={{ display: "flex" }}>
+                  <Box sx={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
                      <Tooltip title="Редагувати" placement="top">
-                        <IconButton onClick={() => {props.editHandler()}} color="primary" >
-                           <EditIcon />
+                        <IconButton 
+                           onClick={() => {props.editHandler()}} 
+                           sx={{ 
+                              color: '#2E7D32',
+                              backgroundColor: '#E8F5E9', 
+                              '&:hover': { 
+                                 backgroundColor: '#C8E6C9',
+                                 transform: 'scale(1.08)'
+                              },
+                              transition: 'all 0.2s',
+                              width: 36,
+                              height: 36,
+                              borderRadius: '8px'
+                           }}
+                        >
+                           <EditIcon fontSize="small" />
                         </IconButton>
                      </Tooltip>
                      <Tooltip title={props.cardInfo.isArchived == false ? "Архівувати" : "Розархівувати"} placement="top">
-                        <IconButton onClick={() => props.archiveUnarchiveHandler()} color="primary" >
-                           {props.cardInfo.isArchived == false ? <ArchiveIcon /> : <UnarchiveIcon/>}
+                        <IconButton 
+                           onClick={() => props.archiveUnarchiveHandler()} 
+                           sx={{ 
+                              color: '#F57C00',
+                              backgroundColor: '#FFF3E0', 
+                              '&:hover': { 
+                                 backgroundColor: '#FFE0B2',
+                                 transform: 'scale(1.08)'
+                              },
+                              transition: 'all 0.2s',
+                              width: 36,
+                              height: 36,
+                              borderRadius: '8px'
+                           }}
+                        >
+                           {props.cardInfo.isArchived == false ? <ArchiveIcon fontSize="small" /> : <UnarchiveIcon fontSize="small"/>}
                         </IconButton>
                      </Tooltip>
                      <Tooltip title="Видалити" placement="top">
-                        <IconButton onClick={() => props.removeHandler()} color="primary" >
-                           <DeleteIcon />
+                        <IconButton 
+                           onClick={() => props.removeHandler()} 
+                           sx={{ 
+                              color: '#D32F2F',
+                              backgroundColor: '#FFEBEE', 
+                              '&:hover': { 
+                                 backgroundColor: '#FFCDD2',
+                                 transform: 'scale(1.08)'
+                              },
+                              transition: 'all 0.2s',
+                              width: 36,
+                              height: 36,
+                              borderRadius: '8px'
+                           }}
+                        >
+                           <DeleteIcon fontSize="small" />
                         </IconButton>
                      </Tooltip>
                   </Box>
@@ -96,10 +138,16 @@ export const CardComponent = (props: {
                   size="small"
                   variant="contained"
                   sx={{
-                     backgroundColor: '#4CAF50',
-                     '&:hover': { backgroundColor: '#388E3C' },
+                     backgroundColor: '#2E7D32',
+                     '&:hover': { 
+                        backgroundColor: '#1B5E20',
+                        boxShadow: '0 4px 12px rgba(46, 125, 50, 0.2)'
+                     },
                      textTransform: 'none',
-                     fontWeight: 600
+                     fontWeight: 700,
+                     py: 1,
+                     borderRadius: '8px',
+                     boxShadow: 'none'
                   }}
                   onClick={() => navigate(`/fields/${props.cardInfo.id}`)}
                   fullWidth

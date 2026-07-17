@@ -1,10 +1,11 @@
-import { Box, Button, Container, MenuItem, Pagination, TextField, Typography } from "@mui/material"
+import { Box, Button, Container, MenuItem, Pagination, Typography, FormControl, Select, InputAdornment } from "@mui/material"
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { useEffect, useState } from "react";
 import { archiveFieldAsync, getFieldsAsync, removeFieldAsync, unarchiveFieldAsync } from "../redux/actions/fieldsActions";
 import type { IPagination } from "../interfaces/general";
 import { CardComponent } from "../components/CardComponent";
 import AddIcon from '@mui/icons-material/Add';
+import ArchiveIcon from '@mui/icons-material/Archive';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { FieldFormModal } from "../components/FieldFormModal";
 import type { IFieldEdit } from "../interfaces/fields/fields";
@@ -60,20 +61,42 @@ export const FieldsPage = () => {
                Мої Агроділянки
             </Typography>
 
-            <TextField
-               sx={{ marginLeft: 'auto', borderRadius: "20px", height: "100%" }}
-               select
-               value={Number(pagination.isArchived)}
-               onChange={(e) => {
-                  setPagination({
-                     page: 0,
-                     sizeOfPage: 6,
-                     isArchived: Boolean(e.target.value)
-                  });
-               }}>
-               <MenuItem value={0}>Не архівовані</MenuItem>
-               <MenuItem value={1}>Архівовані</MenuItem>
-            </TextField>
+            <FormControl sx={{ minWidth: 200, marginLeft: 'auto' }} size="small">
+               <Select
+                  value={Number(pagination.isArchived)}
+                  onChange={(e) => {
+                     setPagination({
+                        page: 0,
+                        sizeOfPage: 6,
+                        isArchived: Boolean(Number(e.target.value))
+                     });
+                  }}
+                  startAdornment={
+                     <InputAdornment position="start">
+                        <ArchiveIcon sx={{ color: '#2E7D32' }} />
+                     </InputAdornment>
+                  }
+                  sx={{
+                     borderRadius: '8px',
+                     backgroundColor: '#FFFFFF',
+                     color: '#2E7D32',
+                     fontWeight: 600,
+                     '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#C8E6C9',
+                     },
+                     '&:hover .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#81C784',
+                     },
+                     '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#2E7D32',
+                     },
+                  }}
+               >
+                  <MenuItem value={0} sx={{ fontWeight: 600, color: '#1B5E20' }}>Активні поля</MenuItem>
+                  <MenuItem value={1} sx={{ fontWeight: 600, color: '#E57373' }}>Архівовані поля</MenuItem>
+               </Select>
+            </FormControl>
+
 
             {!isAuditor && (
                <Button
@@ -206,7 +229,7 @@ export const FieldsPage = () => {
             handleAgree={async () => {
                if (token) {
                   if (deletedFieldId !== "") {
-                     await dispatch(removeFieldAsync({id:deletedFieldId,token}));
+                     await dispatch(removeFieldAsync({ id: deletedFieldId, token }));
                      refreshFields();
                   }
                   setIsConfirmationOpen(false);
