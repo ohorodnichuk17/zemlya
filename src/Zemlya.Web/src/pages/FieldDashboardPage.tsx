@@ -20,7 +20,7 @@ import '../assets/fonts/OpenSans-Regular-normal.js';
 import { format } from 'date-fns';
 import { autoTable } from 'jspdf-autotable'
 import brand from '../assets/images/brand.png';
-import { crops, shellingImpactLevels, soils } from '../types/dataTypes.js';
+import { agroClimaticZones, crops, growthStages, shellingImpactLevels, soils, weatherDescriptions } from '../types/dataTypes.js';
 
 
 
@@ -143,15 +143,15 @@ export const FieldDashboardPage = () => {
     doc.text(`Тип грунту: ${soils[data!.soil].name || 'Невідомо'}`, 10, yOffset += 10);
     doc.text(`Площа (Га): ${data?.sizeHectares || 'Невідомо'}`, 10, yOffset += 10);
     doc.text(`Область: ${data?.oblast || 'Невідомо'}`, 10, yOffset += 10);
-    doc.text(`Зона: ${data?.agroClimaticZone || 'Невідомо'}`, 10, yOffset += 10);
+    doc.text(`Зона: ${agroClimaticZones[data!.agroClimaticZone] || 'Невідомо'}`, 10, yOffset += 10);
     doc.text(`Вплив війни: ${shellingImpactLevels[data!.shellingImpactLevel].name || 'Невідомо'}`, 10, yOffset += 10);
     doc.text(`Дата посіву: ${data?.sowingDate ? format(data!.sowingDate, 'dd.MM.yyyy') : 'Невідомо'}`, 10, yOffset += 10);
     doc.text(`Днів від посіву: ${data?.daysSinceSowing || 'Невідомо'}`, 10, yOffset += 10);
-    doc.text(`Фаза росту: ${data?.growthStage || 'Невідомо'}`, 10, yOffset += 10);
+    doc.text(`Фаза росту: ${growthStages[data!.growthStage] || 'Невідомо'}`, 10, yOffset += 10);
     doc.text(`Поточна температура: ${data?.currentTemperature || 'Невідомо'} °C`, 10, yOffset += 10);
     doc.text(`Вологість повітря: ${data?.currentHumidity || 'Невідомо'} %`, 10, yOffset += 10);
     doc.text(`Опади (мм): ${data?.rainAmount || 'Невідомо'}`, 10, yOffset += 10);
-    doc.text(`Опис погоди: ${data?.weatherDescription || 'Невідомо'}`, 10, yOffset += 10);
+    doc.text(`Опис погоди: ${weatherDescriptions[data!.weatherDescription] || 'Невідомо'}`, 10, yOffset += 10);
 
     if (data?.forecast && data.forecast.length > 0) {
       doc.text(`Прогноз :`, 10, yOffset += 10);

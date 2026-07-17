@@ -42,7 +42,7 @@ export const CardComponent = (props: {
 
       <Card sx={{
          width: 280,
-         height: 410,
+         height: 420,
          display: 'flex',
          flexDirection: 'column',
          boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
