@@ -61,7 +61,7 @@ public static class DependencyInjection
         {
             services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
 
-            services.AddHttpClient<IWeatherService, MockWeatherService>();
+            services.AddHttpClient<IWeatherService, WeatherService>();
             services.AddTransient<AgroClimaticZoneResolver>();
             services.AddTransient<CropGrowthStageResolver>();
             services.AddTransient<ForecastAggregator>();
@@ -76,7 +76,7 @@ public static class DependencyInjection
             return services;
         }
         
-        public IServiceCollection AddJwtBearer(IConfiguration configuration)
+        public IServiceCollection AddAuth(IConfiguration configuration)
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
