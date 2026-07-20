@@ -13,14 +13,13 @@ Rather than relying on dangerous physical field testing in mined areas, **Zemlya
 ## 📸 Project Demonstration
 
 ### 1. Dashboard & Field Overview
-![Dashboard](3.png)
+<img width="2686" height="1575" alt="1" src="https://github.com/user-attachments/assets/dcb36420-d936-4153-8b93-dc0e3a60ec51" />
 
 ### 2. Ecological Recommendations & Recovery Calendar
-![Recovery Recommendations](1.png)
+<img width="1382" height="872" alt="2" src="https://github.com/user-attachments/assets/986eadb0-741c-43a0-b8c9-7e465c438580" />
 
 ### 3. Integrated Scientific Soil Database (Organic Portal)
-![GIS Soil Map](2.png)
-
+<img width="2616" height="1567" alt="3" src="https://github.com/user-attachments/assets/b11cc88c-7efd-44b6-92d6-dded98b3da65" />
 ---
 
 ## 🌟 Key Features
